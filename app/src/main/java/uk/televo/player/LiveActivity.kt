@@ -54,6 +54,7 @@ class LiveActivity : AppCompatActivity() {
     private val overlayHandler = Handler(Looper.getMainLooper())
     private var overlayVisible = false
     private var muted = false
+    private var hasEpg = false
     private val hideOverlay = Runnable {
         b.liveBadge.visibility = View.GONE
         b.nowBar.visibility = View.GONE
@@ -388,9 +389,12 @@ class LiveActivity : AppCompatActivity() {
                     b.nowSub.text = currentCat?.name ?: ""
                     b.nowProgress.progress = 0
                 }
-                if (list.isEmpty()) b.epgEmpty.visibility = View.VISIBLE
-                else {
-                    b.epgEmpty.visibility = View.GONE
+                // Hide the whole EPG box when the channel has no guide; show it when it does.
+                hasEpg = list.isNotEmpty()
+                if (!hasEpg) {
+                    b.epgCard.visibility = View.GONE
+                } else {
+                    b.epgCard.visibility = if (fullscreen) View.GONE else View.VISIBLE
                     b.rvEpg.adapter = EpgAdapter(list) { e -> playCatchup(p, streamId, e) }
                 }
             }
@@ -419,7 +423,7 @@ class LiveActivity : AppCompatActivity() {
         b.railCol.visibility = vis
         b.colCategories.visibility = vis
         b.colChannels.visibility = vis
-        b.epgCard.visibility = vis
+        b.epgCard.visibility = if (on) View.GONE else (if (hasEpg) View.VISIBLE else View.GONE)
         b.divRail.visibility = vis
         b.divCats.visibility = vis
         b.divChans.visibility = vis
@@ -432,7 +436,17 @@ class LiveActivity : AppCompatActivity() {
             b.fsAspectLabel.post { b.fsAspectLabel.requestFocus() }
         } else {
             b.fsControls.visibility = View.GONE
-            b.rvChannels.post { b.rvChannels.requestFocus() }
+            focusCurrentChannel()
+        }
+    }
+
+    /** Put the remote's focus back on the channel that's currently playing. */
+    private fun focusCurrentChannel() {
+        val idx = currentList.indexOfFirst { it.streamId == currentChannel?.streamId }
+        if (idx < 0) { b.rvChannels.post { b.rvChannels.requestFocus() }; return }
+        (b.rvChannels.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(idx, 120)
+        b.rvChannels.post {
+            (b.rvChannels.findViewHolderForAdapterPosition(idx)?.itemView ?: b.rvChannels).requestFocus()
         }
     }
 
