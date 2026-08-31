@@ -32,13 +32,13 @@ class RadioActivity : AppCompatActivity() {
                 Net.ui {
                     if (channels.isEmpty()) { b.radioStatus.text = "No radio stations in this playlist." ; return@ui }
                     b.radioStatus.text = "${channels.size} stations"
-                    b.rvRadio.adapter = ChannelAdapter(channels) { ch ->
+                    b.rvRadio.adapter = ChannelAdapter(channels, { ch ->
                         startActivity(
                             Intent(this, PlayerActivity::class.java)
                                 .putExtra("url", Xtream.playUrl(xt, ch.streamId))
                                 .putExtra("title", ch.name)
                         )
-                    }
+                    })
                 }
             } catch (e: Exception) {
                 Net.ui { b.radioStatus.text = "Couldn't load radio." }
