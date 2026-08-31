@@ -61,6 +61,10 @@ object Prefs {
     fun pin(c: Context): String = sp(c).getString("pin", "0000") ?: "0000"
     fun setPin(c: Context, v: String) { sp(c).edit().putString("pin", v).apply() }
 
+    /** Video aspect mode: 0 Fit, 1 Fill, 2 Stretch, 3 16:9, 4 4:3, 5 Original */
+    fun aspectMode(c: Context): Int = sp(c).getInt("aspect", 0)
+    fun setAspectMode(c: Context, v: Int) { sp(c).edit().putInt("aspect", v).apply() }
+
     // ---- last played channel (for "play last on startup") ----
     fun lastStreamId(c: Context): String? = sp(c).getString("last_stream", null)
     fun saveLastChannel(c: Context, streamId: String) { sp(c).edit().putString("last_stream", streamId).apply() }

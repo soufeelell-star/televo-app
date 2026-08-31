@@ -11,8 +11,8 @@ android {
         applicationId 'uk.televo.player'
         minSdk 21
         targetSdk 34
-        versionCode 19
-        versionName '1.9.1'
+        versionCode 20
+        versionName '1.9.2'
         // libVLC ships native .so per ABI — keep the arm ABIs that cover TV boxes & phones
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a' }
     }

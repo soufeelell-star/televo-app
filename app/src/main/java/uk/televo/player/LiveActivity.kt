@@ -85,6 +85,7 @@ class LiveActivity : AppCompatActivity() {
         b.railHome.setOnClickListener { if (!guardLocked()) finish() }
         b.railExit.setOnClickListener { if (!guardLocked()) finish() }
         b.railFull.setOnClickListener { toggleFullscreen() }
+        b.railAspect.setOnClickListener { cycleAspect() }
         b.playerFrame.setOnClickListener { toggleFullscreen() }
         b.railFav.setOnClickListener { toggleFavourites() }
         b.railLock.setOnClickListener { toggleLock() }
@@ -122,7 +123,6 @@ class LiveActivity : AppCompatActivity() {
         val lib = LibVLC(this, options)
         val mp = MediaPlayer(lib)
         mp.attachViews(b.playerView, null, false, false)
-        mp.videoScale = MediaPlayer.ScaleType.SURFACE_BEST_FIT
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         mp.setEventListener { ev ->
@@ -132,6 +132,7 @@ class LiveActivity : AppCompatActivity() {
                 MediaPlayer.Event.Playing -> {
                     b.playerBuffering.visibility = View.GONE
                     retries = 0
+                    applyAspect()
                     // video track size isn't ready instantly — poll a few times
                     updateQuality()
                     clock.postDelayed({ updateQuality() }, 900)
@@ -184,18 +185,51 @@ class LiveActivity : AppCompatActivity() {
 
     private fun updateQuality() {
         val t = vlc?.currentVideoTrack ?: return
+        if (t.width <= 0 || t.height <= 0) return
         b.nowQuality.text = qualityLabel(t.width, t.height)
+        b.qualityBadge.text = qualityTag(t.width, t.height)
+        b.qualityBadge.visibility = View.VISIBLE   // persistent — always shows the current quality
+    }
+
+    private fun qualityTag(w: Int, h: Int): String = when {
+        h >= 2000 || w >= 3000 -> "4K"
+        h >= 1080 -> "1080p"
+        h >= 720 -> "720p"
+        else -> "SD"
     }
 
     private fun qualityLabel(w: Int, h: Int): String {
         if (w <= 0 || h <= 0) return ""
-        val tag = when {
-            h >= 2000 || w >= 3000 -> "4K"
-            h >= 1080 -> "1080p"
-            h >= 720 -> "720p"
-            else -> "SD"
+        return "${w}×${h} · ${qualityTag(w, h)}"
+    }
+
+    // ---------------- aspect ratio ----------------
+
+    private fun applyAspect() {
+        vlc?.videoScale = when (Prefs.aspectMode(this)) {
+            1 -> MediaPlayer.ScaleType.SURFACE_FIT_SCREEN
+            2 -> MediaPlayer.ScaleType.SURFACE_FILL
+            3 -> MediaPlayer.ScaleType.SURFACE_16_9
+            4 -> MediaPlayer.ScaleType.SURFACE_4_3
+            5 -> MediaPlayer.ScaleType.SURFACE_ORIGINAL
+            else -> MediaPlayer.ScaleType.SURFACE_BEST_FIT
         }
-        return "${w}×${h} · $tag"
+    }
+
+    private fun cycleAspect() {
+        val next = (Prefs.aspectMode(this) + 1) % 6
+        Prefs.setAspectMode(this, next)
+        applyAspect()
+        Toast.makeText(this, aspectName(next), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun aspectName(m: Int): String = when (m) {
+        1 -> getString(R.string.aspect_fill)
+        2 -> getString(R.string.aspect_stretch)
+        3 -> "16:9"
+        4 -> "4:3"
+        5 -> getString(R.string.aspect_original)
+        else -> getString(R.string.aspect_fit)
     }
 
     // ---------------- load ----------------
@@ -330,8 +364,8 @@ class LiveActivity : AppCompatActivity() {
         b.colCategories.visibility = vis
         b.colChannels.visibility = vis
         b.epgCard.visibility = vis
-        // Fill the whole screen when fullscreen (crop keeps aspect, no black bars); fit otherwise.
-        vlc?.videoScale = if (on) MediaPlayer.ScaleType.SURFACE_FIT_SCREEN else MediaPlayer.ScaleType.SURFACE_BEST_FIT
+        // Keep the user's chosen aspect (default Fit — never distorts); the panels just hide.
+        applyAspect()
         val pad = if (on) 0 else (14 * resources.displayMetrics.density).toInt()
         b.stageCol.setPadding(pad, pad, pad, pad)
         b.railFull.setColorFilter(ContextCompat.getColor(this, if (on) R.color.tv_accent else R.color.tv_muted))
