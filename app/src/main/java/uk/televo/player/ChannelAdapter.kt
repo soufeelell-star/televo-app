@@ -26,9 +26,9 @@ class ChannelAdapter(
         holder.b.chNum.text = c.num
         holder.b.chLogo.text = initials(c.name)
 
-        // real channel logo from the line; initials show through until it loads
+        // logo from the tv-logos collection (matched by name), else the provider's; initials show until it loads
         holder.b.chLogoImg.setImageDrawable(null)
-        ImageLoader.load(c.icon, holder.b.chLogoImg)
+        ImageLoader.loadChannel(ctx, c.name, c.icon, holder.b.chLogoImg)
 
         holder.b.chFav.visibility = if (Prefs.isFavorite(ctx, c.streamId)) View.VISIBLE else View.GONE
         holder.b.root.isSelected = position == selected
