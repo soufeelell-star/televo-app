@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Design tokens (Televo handoff) -->
     <color name="tv_ground">#FF080B12</color>
     <color name="tv_ground2">#FF0C1220</color>
     <color name="tv_surface">#FF111726</color>
     <color name="tv_surface2">#FF1A2234</color>
-    <color name="tv_line">#33FFFFFF</color>
+    <color name="tv_surface3">#FF232E48</color>
+    <color name="tv_card_top">#FF141B2B</color>
+    <color name="tv_line">#12FFFFFF</color>
+    <color name="tv_line_strong">#1FFFFFFF</color>
     <color name="tv_text">#FFF2F5FC</color>
     <color name="tv_muted">#FF8E9BB8</color>
     <color name="tv_muted2">#FF6E7A96</color>
+    <color name="tv_muted3">#FF5D6884</color>
     <color name="tv_blue">#FF2B7BF3</color>
     <color name="tv_violet">#FF7A2BD6</color>
+    <color name="tv_purple">#FF9333EA</color>
     <color name="tv_magenta">#FFD42CB0</color>
     <color name="tv_lavender">#FFC77BF0</color>
-    <color name="tv_purple">#FF9333EA</color>
     <color name="tv_accent">#FFC77BF0</color>
     <color name="tv_good">#FF35D07E</color>
     <color name="tv_amber">#FFF5B301</color>
+    <color name="tv_danger">#FFFF5C6C</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

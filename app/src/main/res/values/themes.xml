@@ -9,5 +9,8 @@
         <item name="android:statusBarColor">@color/tv_ground</item>
         <item name="android:navigationBarColor">@color/tv_ground</item>
         <item name="android:textColorPrimary">@color/tv_text</item>
+        <!-- App-wide body font -->
+        <item name="android:fontFamily">@font/manrope</item>
+        <item name="fontFamily">@font/manrope</item>
     </style>
 </resources>
