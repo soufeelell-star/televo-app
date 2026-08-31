@@ -208,8 +208,6 @@ class LiveActivity : AppCompatActivity() {
         val t = vlc?.currentVideoTrack ?: return
         if (t.width <= 0 || t.height <= 0) return
         b.nowQuality.text = qualityLabel(t.width, t.height)
-        b.qualityBadge.text = qualityTag(t.width, t.height)
-        b.qualityBadge.visibility = View.VISIBLE   // persistent — always shows the current quality
     }
 
     private fun qualityTag(w: Int, h: Int): String = when {
@@ -422,6 +420,9 @@ class LiveActivity : AppCompatActivity() {
         b.colCategories.visibility = vis
         b.colChannels.visibility = vis
         b.epgCard.visibility = vis
+        b.divRail.visibility = vis
+        b.divCats.visibility = vis
+        b.divChans.visibility = vis
         applyAspect()
         val pad = if (on) 0 else (14 * resources.displayMetrics.density).toInt()
         b.stageCol.setPadding(pad, pad, pad, pad)

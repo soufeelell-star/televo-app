@@ -66,18 +66,24 @@
             <ImageButton android:id="@+id/rail_exit" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_exit" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Exit" />
         </LinearLayout>
 
+        <View android:id="@+id/div_rail" android:layout_width="1dp" android:layout_height="match_parent" android:background="@drawable/bg_divider_v" />
+
         <!-- categories -->
         <LinearLayout android:id="@+id/col_categories" android:layout_width="0dp" android:layout_weight="1.7" android:layout_height="match_parent" android:orientation="vertical" android:paddingHorizontal="10dp">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CATEGORIES" android:textColor="@color/tv_muted" android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.12" android:paddingHorizontal="6dp" android:paddingVertical="10dp" />
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_categories" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_categories" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:scrollbars="vertical" android:fadeScrollbars="true" />
         </LinearLayout>
+
+        <View android:id="@+id/div_cats" android:layout_width="1dp" android:layout_height="match_parent" android:background="@drawable/bg_divider_v" />
 
         <!-- channels -->
         <LinearLayout android:id="@+id/col_channels" android:layout_width="0dp" android:layout_weight="2.1" android:layout_height="match_parent" android:orientation="vertical" android:paddingHorizontal="10dp">
             <TextView android:id="@+id/chan_cat_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_muted" android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.12" android:paddingHorizontal="6dp" android:paddingVertical="10dp" />
             <EditText android:id="@+id/search_input" android:layout_width="match_parent" android:layout_height="wrap_content" android:visibility="gone" android:background="@drawable/bg_field" android:padding="12dp" android:layout_marginBottom="10dp" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted3" android:hint="Search channels…" android:inputType="text" android:maxLines="1" android:imeOptions="actionSearch" android:drawableStart="@drawable/ic_search" android:drawablePadding="8dp" />
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_channels" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_channels" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:scrollbars="vertical" android:fadeScrollbars="true" />
         </LinearLayout>
+
+        <View android:id="@+id/div_chans" android:layout_width="1dp" android:layout_height="match_parent" android:background="@drawable/bg_divider_v" />
 
         <!-- stage: player + epg -->
         <LinearLayout android:id="@+id/stage_col" android:layout_width="0dp" android:layout_weight="3.6" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
@@ -88,8 +94,6 @@
                 <ProgressBar android:id="@+id/player_buffering" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:indeterminateTint="@color/tv_magenta" />
 
                 <TextView android:id="@+id/live_badge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top|start" android:layout_margin="16dp" android:background="@drawable/bg_live_badge" android:paddingHorizontal="11dp" android:paddingVertical="5dp" android:text="● LIVE" android:textColor="#FFFF8A95" android:textStyle="bold" android:textSize="12sp" />
-
-                <TextView android:id="@+id/quality_badge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top|end" android:layout_margin="16dp" android:background="@drawable/bg_pill13" android:paddingHorizontal="11dp" android:paddingVertical="5dp" android:text="" android:textColor="@color/tv_text" android:textStyle="bold" android:textSize="12sp" android:fontFamily="@font/jbmono" android:visibility="gone" />
 
                 <!-- bottom overlay: info bar + fullscreen controls -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:orientation="vertical" android:padding="16dp">
@@ -129,7 +133,7 @@
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TODAY" android:textColor="@color/tv_muted" android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.1" />
                 </LinearLayout>
                 <TextView android:id="@+id/epg_empty" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="No programme info." android:textColor="@color/tv_muted" android:textSize="13sp" android:visibility="gone" />
-                <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_epg" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="6dp" android:clipToPadding="false" />
+                <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_epg" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="6dp" android:clipToPadding="false" android:scrollbars="vertical" android:fadeScrollbars="true" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
