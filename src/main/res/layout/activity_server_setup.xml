@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="40dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <ImageView android:layout_width="70dp" android:layout_height="70dp" android:src="@drawable/ic_televo" android:contentDescription="@string/app_name" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:text="Connect to your Televo server"
+            android:textColor="@color/tv_text" android:textSize="22sp" android:textStyle="bold" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="6dp" android:text="One-time. Enter your panel address and key."
+            android:textColor="@color/tv_muted" android:textSize="14sp" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/bg_card"
+            android:padding="22dp" android:layout_marginTop="22dp" android:maxWidth="620dp">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Server URL" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" />
+            <EditText android:id="@+id/in_url" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" android:padding="13dp" android:background="@drawable/bg_field"
+                android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted"
+                android:hint="https://panel.televo.uk" android:inputType="textUri" android:imeOptions="actionNext" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="API key" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" />
+            <EditText android:id="@+id/in_key" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" android:padding="13dp" android:background="@drawable/bg_field"
+                android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted"
+                android:hint="your api_key from config.php" android:inputType="text" />
+
+            <Button android:id="@+id/btn_connect" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="22dp" android:text="Connect" android:textColor="@color/white" android:textStyle="bold"
+                android:background="@drawable/bg_btn_primary" android:stateListAnimator="@null" />
+
+            <TextView android:id="@+id/setup_msg" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" android:text="" android:textColor="@color/tv_amber" android:textSize="13sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
