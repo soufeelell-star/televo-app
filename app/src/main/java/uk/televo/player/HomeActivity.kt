@@ -21,11 +21,11 @@ class HomeActivity : AppCompatActivity() {
         setContentView(b.root)
 
         b.tileLive.setOnClickListener { startActivity(Intent(this, LiveActivity::class.java)) }
-        val soon = View.OnClickListener { Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show() }
-        b.tileMovies.setOnClickListener(soon)
-        b.tileSeries.setOnClickListener(soon)
-        b.tileRadio.setOnClickListener(soon)
+        b.tileMovies.setOnClickListener { startActivity(Intent(this, MoviesActivity::class.java)) }
+        b.tileSeries.setOnClickListener { startActivity(Intent(this, SeriesActivity::class.java)) }
+        b.tileRadio.setOnClickListener { startActivity(Intent(this, RadioActivity::class.java)) }
 
+        val soon = View.OnClickListener { Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show() }
         b.btnRefresh.setOnClickListener { loadStatus() }
         b.btnLang.setOnClickListener(soon)
         b.btnTimeshift.setOnClickListener(soon)

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="tv_ground">#FF0B0F16</color>
-    <color name="tv_ground2">#FF0E1420</color>
-    <color name="tv_surface">#FF161D2E</color>
-    <color name="tv_surface2">#FF212B44</color>
+    <color name="tv_ground">#FF080B12</color>
+    <color name="tv_ground2">#FF0C1220</color>
+    <color name="tv_surface">#FF111726</color>
+    <color name="tv_surface2">#FF1A2234</color>
     <color name="tv_line">#33FFFFFF</color>
-    <color name="tv_text">#FFF4F6FB</color>
-    <color name="tv_muted">#FF93A0BC</color>
-    <color name="tv_blue">#FF2E7DF2</color>
-    <color name="tv_violet">#FF7C2FD6</color>
+    <color name="tv_text">#FFF2F5FC</color>
+    <color name="tv_muted">#FF8E9BB8</color>
+    <color name="tv_muted2">#FF6E7A96</color>
+    <color name="tv_blue">#FF2B7BF3</color>
+    <color name="tv_violet">#FF7A2BD6</color>
     <color name="tv_magenta">#FFD42CB0</color>
+    <color name="tv_lavender">#FFC77BF0</color>
     <color name="tv_purple">#FF9333EA</color>
-    <color name="tv_accent">#FF9333EA</color>
-    <color name="tv_good">#FF37D07F</color>
+    <color name="tv_accent">#FFC77BF0</color>
+    <color name="tv_good">#FF35D07E</color>
     <color name="tv_amber">#FFF5B301</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="40dp"
+    android:gravity="center_vertical"
+    android:baselineAligned="false">
+
+    <ImageView android:id="@+id/cover" android:layout_width="260dp" android:layout_height="380dp"
+        android:scaleType="centerCrop" android:background="@drawable/bg_field" android:contentDescription="@string/movies" />
+
+    <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="30dp">
+        <TextView android:id="@+id/d_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_text" android:textSize="30sp" android:textStyle="bold" android:maxLines="2" android:ellipsize="end" />
+        <TextView android:id="@+id/d_meta" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="" android:textColor="@color/tv_lavender" android:textSize="14sp" android:textStyle="bold" />
+        <TextView android:id="@+id/d_plot" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="" android:textColor="@color/tv_muted" android:textSize="15sp" android:lineSpacingExtra="4dp" android:maxLines="7" android:ellipsize="end" />
+        <Button android:id="@+id/btn_play" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="22dp" android:paddingHorizontal="34dp" android:text="▶  Play" android:textColor="@color/white" android:textStyle="bold" android:textAllCaps="false" android:background="@drawable/bg_btn_primary" android:stateListAnimator="@null" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="32dp"
+    android:baselineAligned="false">
+
+    <ImageView android:id="@+id/cover" android:layout_width="220dp" android:layout_height="320dp"
+        android:scaleType="centerCrop" android:background="@drawable/bg_field" android:contentDescription="@string/series" />
+
+    <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:orientation="vertical" android:layout_marginStart="28dp">
+        <TextView android:id="@+id/s_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_text" android:textSize="28sp" android:textStyle="bold" android:maxLines="2" android:ellipsize="end" />
+        <TextView android:id="@+id/s_plot" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="" android:textColor="@color/tv_muted" android:textSize="14sp" android:lineSpacingExtra="3dp" android:maxLines="4" android:ellipsize="end" />
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="16dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SEASON" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.1" />
+            <Spinner android:id="@+id/sp_season" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="160dp" android:layout_marginStart="12dp" android:background="@drawable/bg_field" android:padding="6dp" />
+        </LinearLayout>
+
+        <TextView android:id="@+id/s_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Loading…" android:textColor="@color/tv_muted" android:textSize="13sp" />
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_episodes" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="10dp" android:clipToPadding="false" />
+    </LinearLayout>
+</LinearLayout>

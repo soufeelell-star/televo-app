@@ -110,6 +110,112 @@ object Xtream {
     fun playUrl(p: Api.Playlist, streamId: String): String =
         "${p.host}/live/${p.username}/${p.password}/$streamId.m3u8"
 
+    // ---------------- Movies (VOD) ----------------
+    data class Vod(val name: String, val streamId: String, val icon: String?, val categoryId: String, val ext: String, val rating: String)
+    class VodCatalogue(val categories: List<Category>, val byCategory: Map<String, List<Vod>>)
+
+    fun loadVod(p: Api.Playlist): VodCatalogue {
+        val host = p.host ?: return VodCatalogue(emptyList(), emptyMap())
+        val user = p.username ?: return VodCatalogue(emptyList(), emptyMap())
+        val pass = p.password ?: return VodCatalogue(emptyList(), emptyMap())
+        val base = "$host/player_api.php?username=${enc(user)}&password=${enc(pass)}"
+        val catNames = HashMap<String, String>(); val order = ArrayList<String>()
+        runCatching {
+            val ca = JSONArray(httpGet("$base&action=get_vod_categories"))
+            for (i in 0 until ca.length()) { val o = ca.optJSONObject(i) ?: continue; val id = o.optString("category_id"); if (id.isNotEmpty()) { catNames[id] = o.optString("category_name", "Category"); order.add(id) } }
+        }
+        val grouped = LinkedHashMap<String, ArrayList<Vod>>()
+        runCatching {
+            val sa = JSONArray(httpGet("$base&action=get_vod_streams"))
+            for (i in 0 until sa.length()) {
+                val o = sa.optJSONObject(i) ?: continue
+                val cid = o.optString("category_id", "0")
+                grouped.getOrPut(cid) { ArrayList() }.add(
+                    Vod(o.optString("name", "Movie"), o.optString("stream_id", ""), o.optString("stream_icon", null), cid, o.optString("container_extension", "mp4"), o.optString("rating", ""))
+                )
+            }
+        }
+        val cats = ArrayList<Category>(); val seen = HashSet<String>()
+        for (id in order) { val l = grouped[id] ?: continue; cats.add(Category(id, catNames[id] ?: "Category", l.size)); seen.add(id) }
+        for ((id, l) in grouped) if (!seen.contains(id)) cats.add(Category(id, catNames[id] ?: "Other", l.size))
+        return VodCatalogue(cats, grouped)
+    }
+
+    fun vodPlayUrl(p: Api.Playlist, streamId: String, ext: String): String =
+        "${p.host}/movie/${p.username}/${p.password}/$streamId.${ext.ifBlank { "mp4" }}"
+
+    data class VodInfo(val plot: String, val genre: String, val cast: String, val director: String, val release: String, val duration: String, val rating: String, val cover: String?)
+
+    fun vodInfo(p: Api.Playlist, streamId: String): VodInfo {
+        val url = "${p.host}/player_api.php?username=${enc(p.username ?: "")}&password=${enc(p.password ?: "")}&action=get_vod_info&vod_id=$streamId"
+        val info = runCatching { JSONObject(httpGet(url)).optJSONObject("info") }.getOrNull()
+        return VodInfo(
+            info?.optString("plot", "") ?: "", info?.optString("genre", "") ?: "", info?.optString("cast", "") ?: "",
+            info?.optString("director", "") ?: "", info?.optString("releasedate", "") ?: "", info?.optString("duration", "") ?: "",
+            info?.optString("rating", "") ?: "", info?.optString("movie_image", null)
+        )
+    }
+
+    // ---------------- Series ----------------
+    data class Serie(val seriesId: String, val name: String, val cover: String?, val categoryId: String, val plot: String)
+    class SeriesCatalogue(val categories: List<Category>, val byCategory: Map<String, List<Serie>>)
+
+    fun loadSeries(p: Api.Playlist): SeriesCatalogue {
+        val host = p.host ?: return SeriesCatalogue(emptyList(), emptyMap())
+        val user = p.username ?: return SeriesCatalogue(emptyList(), emptyMap())
+        val pass = p.password ?: return SeriesCatalogue(emptyList(), emptyMap())
+        val base = "$host/player_api.php?username=${enc(user)}&password=${enc(pass)}"
+        val catNames = HashMap<String, String>(); val order = ArrayList<String>()
+        runCatching {
+            val ca = JSONArray(httpGet("$base&action=get_series_categories"))
+            for (i in 0 until ca.length()) { val o = ca.optJSONObject(i) ?: continue; val id = o.optString("category_id"); if (id.isNotEmpty()) { catNames[id] = o.optString("category_name", "Category"); order.add(id) } }
+        }
+        val grouped = LinkedHashMap<String, ArrayList<Serie>>()
+        runCatching {
+            val sa = JSONArray(httpGet("$base&action=get_series"))
+            for (i in 0 until sa.length()) {
+                val o = sa.optJSONObject(i) ?: continue
+                val cid = o.optString("category_id", "0")
+                grouped.getOrPut(cid) { ArrayList() }.add(
+                    Serie(o.optString("series_id", ""), o.optString("name", "Series"), o.optString("cover", null), cid, o.optString("plot", ""))
+                )
+            }
+        }
+        val cats = ArrayList<Category>(); val seen = HashSet<String>()
+        for (id in order) { val l = grouped[id] ?: continue; cats.add(Category(id, catNames[id] ?: "Category", l.size)); seen.add(id) }
+        for ((id, l) in grouped) if (!seen.contains(id)) cats.add(Category(id, catNames[id] ?: "Other", l.size))
+        return SeriesCatalogue(cats, grouped)
+    }
+
+    data class Episode(val id: String, val title: String, val season: Int, val num: String, val ext: String)
+    class SeriesDetail(val cover: String?, val plot: String, val seasons: List<Int>, val episodesBySeason: Map<Int, List<Episode>>)
+
+    fun seriesInfo(p: Api.Playlist, seriesId: String): SeriesDetail {
+        val url = "${p.host}/player_api.php?username=${enc(p.username ?: "")}&password=${enc(p.password ?: "")}&action=get_series_info&series_id=$seriesId"
+        val root = runCatching { JSONObject(httpGet(url)) }.getOrNull()
+        val info = root?.optJSONObject("info")
+        val episodesObj = root?.optJSONObject("episodes")
+        val bySeason = LinkedHashMap<Int, List<Episode>>()
+        if (episodesObj != null) {
+            val keys = episodesObj.keys()
+            while (keys.hasNext()) {
+                val k = keys.next()
+                val sNum = k.toIntOrNull() ?: continue
+                val arr = episodesObj.optJSONArray(k) ?: continue
+                val eps = ArrayList<Episode>()
+                for (i in 0 until arr.length()) {
+                    val e = arr.optJSONObject(i) ?: continue
+                    eps.add(Episode(e.optString("id", ""), e.optString("title", "Episode ${e.optString("episode_num", "")}"), sNum, e.optString("episode_num", ""), e.optString("container_extension", "mp4")))
+                }
+                bySeason[sNum] = eps
+            }
+        }
+        return SeriesDetail(info?.optString("cover", null), info?.optString("plot", "") ?: "", bySeason.keys.sorted(), bySeason)
+    }
+
+    fun seriesPlayUrl(p: Api.Playlist, episodeId: String, ext: String): String =
+        "${p.host}/series/${p.username}/${p.password}/$episodeId.${ext.ifBlank { "mp4" }}"
+
     private fun fmt(unix: Long): String =
         SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(unix * 1000))
 

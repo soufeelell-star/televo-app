@@ -32,6 +32,12 @@
         <activity android:name=".ActivationActivity" android:screenOrientation="landscape" />
         <activity android:name=".HomeActivity" android:screenOrientation="landscape" />
         <activity android:name=".LiveActivity" android:screenOrientation="landscape" />
+        <activity android:name=".LoginActivity" android:screenOrientation="landscape" />
+        <activity android:name=".MoviesActivity" android:screenOrientation="landscape" />
+        <activity android:name=".MovieDetailActivity" android:screenOrientation="landscape" />
+        <activity android:name=".SeriesActivity" android:screenOrientation="landscape" />
+        <activity android:name=".SeriesDetailActivity" android:screenOrientation="landscape" />
+        <activity android:name=".RadioActivity" android:screenOrientation="landscape" />
         <activity android:name=".PlayerActivity"
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />

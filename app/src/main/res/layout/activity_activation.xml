@@ -3,56 +3,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="44dp"
+    android:padding="52dp"
     android:baselineAligned="false">
 
-    <!-- Left: device code + status -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+    <!-- left -->
+    <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_vertical" android:paddingEnd="36dp">
 
         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
-            <ImageView android:layout_width="52dp" android:layout_height="52dp" android:src="@drawable/ic_televo" android:contentDescription="@string/app_name" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="@string/app_name" android:textColor="@color/tv_text" android:textSize="26sp" android:textStyle="bold" />
+            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:src="@drawable/ic_televo" android:contentDescription="@string/app_name" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="@string/app_name" android:textColor="@color/tv_text" android:textSize="30sp" android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="22dp" android:text="Activate your device" android:textColor="@color/tv_text" android:textSize="30sp" android:textStyle="bold" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Send this code to your Televo provider. When they activate it, your channels appear automatically." android:textColor="@color/tv_muted" android:textSize="15sp" android:maxWidth="440dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="26dp" android:text="WELCOME" android:textColor="@color/tv_lavender" android:textSize="12.5sp" android:textStyle="bold" android:letterSpacing="0.16" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Activate your device" android:textColor="@color/tv_text" android:textSize="38sp" android:textStyle="bold" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="Send this code to your provider. When they activate it, your channels, movies and series load automatically — no login, no typing." android:textColor="@color/tv_muted" android:textSize="15sp" android:maxWidth="460dp" android:lineSpacingExtra="3dp" />
 
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="24dp" android:layout_marginTop="22dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/device_code_label" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.1" />
-            <TextView android:id="@+id/tv_code" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="@color/tv_magenta" android:textSize="30sp" android:textStyle="bold" android:fontFamily="monospace" />
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="22dp">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="14dp">
+                <TextView android:layout_width="30dp" android:layout_height="30dp" android:gravity="center" android:background="@drawable/bg_field" android:text="1" android:textColor="@color/tv_lavender" android:textStyle="bold" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Share your code" android:textColor="@color/tv_text" android:textSize="15sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Send the device code to your Televo provider." android:textColor="@color/tv_muted" android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="14dp">
+                <TextView android:layout_width="30dp" android:layout_height="30dp" android:gravity="center" android:background="@drawable/bg_field" android:text="2" android:textColor="@color/tv_lavender" android:textStyle="bold" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="We activate it" android:textColor="@color/tv_text" android:textSize="15sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Your provider activates the device and loads your playlist." android:textColor="@color/tv_muted" android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:layout_width="30dp" android:layout_height="30dp" android:gravity="center" android:background="@drawable/bg_field" android:text="3" android:textColor="@color/tv_lavender" android:textStyle="bold" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Start watching" android:textColor="@color/tv_text" android:textSize="15sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Press Check activation and Televo unlocks instantly." android:textColor="@color/tv_muted" android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView android:id="@+id/tv_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:text="@string/waiting" android:textColor="@color/tv_amber" android:textSize="15sp" android:textStyle="bold" />
-
-        <Button android:id="@+id/btn_check" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:paddingHorizontal="26dp" android:text="@string/check_activation" android:textColor="@color/white" android:textStyle="bold" android:background="@drawable/bg_btn_primary" android:stateListAnimator="@null" />
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="22dp">
+            <Button android:id="@+id/btn_check" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingHorizontal="26dp" android:text="✓  Check activation" android:textColor="@color/white" android:textStyle="bold" android:textAllCaps="false" android:background="@drawable/bg_btn_primary" android:stateListAnimator="@null" />
+            <Button android:id="@+id/btn_manual" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:paddingHorizontal="22dp" android:text="Enter playlist manually" android:textColor="@color/tv_text" android:textAllCaps="false" android:background="@drawable/bg_ghost" android:stateListAnimator="@null" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Right: manual login -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingStart="30dp">
-
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="26dp" android:maxWidth="520dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/have_subscription" android:textColor="@color/tv_text" android:textSize="19sp" android:textStyle="bold" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Enter your login to activate instantly." android:textColor="@color/tv_muted" android:textSize="13sp" />
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="Host" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" />
-            <Spinner android:id="@+id/sp_host" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:background="@drawable/bg_field" android:padding="6dp" />
-
-            <EditText android:id="@+id/in_user" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:padding="13dp" android:background="@drawable/bg_field" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted" android:hint="@string/username" android:inputType="text" />
-            <EditText android:id="@+id/in_pass" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:padding="13dp" android:background="@drawable/bg_field" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted" android:hint="@string/password" android:inputType="text" />
-
-            <Button android:id="@+id/btn_activate" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:text="@string/activate" android:textColor="@color/white" android:textStyle="bold" android:background="@drawable/bg_btn_primary" android:stateListAnimator="@null" />
-            <TextView android:id="@+id/tv_login_msg" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="" android:textColor="@color/tv_amber" android:textSize="13sp" />
+    <!-- right -->
+    <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center_horizontal" android:background="@drawable/bg_card" android:padding="34dp" android:minWidth="420dp">
+            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:src="@drawable/ic_televo" android:contentDescription="@string/app_name" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:text="@string/device_code_label" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.14" />
+            <TextView android:id="@+id/tv_code" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="—" android:textColor="@color/tv_magenta" android:textSize="30sp" android:textStyle="bold" android:fontFamily="monospace" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="This code is unique to this device." android:textColor="@color/tv_muted" android:textSize="12.5sp" />
+            <Button android:id="@+id/btn_copy" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:text="Copy code" android:textColor="@color/tv_text" android:textAllCaps="false" android:background="@drawable/bg_ghost" android:stateListAnimator="@null" />
         </LinearLayout>
+        <TextView android:id="@+id/tv_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_pill" android:paddingHorizontal="16dp" android:paddingVertical="9dp" android:text="●  Waiting for activation…" android:textColor="@color/tv_muted" android:textSize="13sp" android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>
