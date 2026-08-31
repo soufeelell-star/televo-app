@@ -65,6 +65,20 @@ object Prefs {
     fun lastStreamId(c: Context): String? = sp(c).getString("last_stream", null)
     fun saveLastChannel(c: Context, streamId: String) { sp(c).edit().putString("last_stream", streamId).apply() }
 
+    // ---- favourite channels (set of stream ids) ----
+    fun favorites(c: Context): MutableSet<String> =
+        HashSet(sp(c).getStringSet("favorites", emptySet()) ?: emptySet())
+
+    fun isFavorite(c: Context, id: String): Boolean = favorites(c).contains(id)
+
+    /** Returns the new state (true = now favourite). */
+    fun toggleFavorite(c: Context, id: String): Boolean {
+        val set = favorites(c)
+        val now = if (set.contains(id)) { set.remove(id); false } else { set.add(id); true }
+        sp(c).edit().putStringSet("favorites", set).apply()
+        return now
+    }
+
     fun logout(c: Context) {
         sp(c).edit()
             .remove("host").remove("username").remove("password").remove("server_name")

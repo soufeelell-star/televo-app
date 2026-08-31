@@ -7,12 +7,18 @@
     android:background="@drawable/bg_row"
     android:focusable="true"
     android:clickable="true"
-    android:padding="12dp"
+    android:padding="10dp"
     android:layout_marginBottom="8dp">
 
-    <TextView android:id="@+id/ch_logo" android:layout_width="46dp" android:layout_height="46dp" android:gravity="center" android:text="TV" android:textColor="@color/tv_magenta" android:textStyle="bold" android:textSize="13sp" android:background="@drawable/bg_field" />
+    <!-- logo box: fixed size, centred, initials fallback behind -->
+    <FrameLayout android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/bg_logo">
+        <TextView android:id="@+id/ch_logo" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="TV" android:textColor="@color/tv_muted" android:fontFamily="@font/outfit" android:textStyle="bold" android:textSize="13sp" />
+        <ImageView android:id="@+id/ch_logo_img" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="5dp" android:scaleType="fitCenter" android:contentDescription="@null" />
+    </FrameLayout>
 
     <TextView android:id="@+id/ch_name" android:duplicateParentState="true" android:textColor="@color/row_name" android:fontFamily="@font/outfit" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="14dp" android:text="Channel" android:textSize="14.5sp" android:textStyle="bold" android:singleLine="true" android:ellipsize="end" />
+
+    <ImageView android:id="@+id/ch_fav" android:layout_width="16dp" android:layout_height="16dp" android:layout_marginEnd="8dp" android:src="@drawable/ic_star_on" android:visibility="gone" android:contentDescription="@null" />
 
     <TextView android:id="@+id/ch_num" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_num" android:paddingHorizontal="10dp" android:paddingVertical="5dp" android:text="0" android:textColor="@color/tv_amber" android:textStyle="bold" android:textSize="13sp" android:fontFamily="@font/jbmono" />
 </LinearLayout>

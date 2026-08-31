@@ -1,36 +1,49 @@
 package uk.televo.player
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import uk.televo.player.databinding.ItemChannelBinding
 
 class ChannelAdapter(
     private val items: List<Xtream.Channel>,
-    private val onClick: (Xtream.Channel) -> Unit
+    private val onClick: (Xtream.Channel) -> Unit,
+    private val onToggleFav: (Xtream.Channel) -> Unit = {}
 ) : RecyclerView.Adapter<ChannelAdapter.VH>() {
 
-    private var selected = 0
+    private var selected = -1
 
     class VH(val b: ItemChannelBinding) : RecyclerView.ViewHolder(b.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val b = ItemChannelBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VH(b)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
+        VH(ItemChannelBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val c = items[position]
+        val ctx = holder.b.root.context
         holder.b.chName.text = c.name
         holder.b.chNum.text = c.num
         holder.b.chLogo.text = initials(c.name)
+
+        // real channel logo from the line; initials show through until it loads
+        holder.b.chLogoImg.setImageDrawable(null)
+        ImageLoader.load(c.icon, holder.b.chLogoImg)
+
+        holder.b.chFav.visibility = if (Prefs.isFavorite(ctx, c.streamId)) View.VISIBLE else View.GONE
         holder.b.root.isSelected = position == selected
+
         holder.b.root.setOnClickListener {
             val old = selected
             selected = position
-            notifyItemChanged(old)
+            if (old >= 0) notifyItemChanged(old)
             notifyItemChanged(position)
             onClick(c)
+        }
+        holder.b.root.setOnLongClickListener {
+            onToggleFav(c)
+            notifyItemChanged(position)
+            true
         }
     }
 

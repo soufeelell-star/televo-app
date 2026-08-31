@@ -49,4 +49,10 @@
     <string name="pin_changed">PIN updated</string>
     <string name="pin_invalid">Enter a 4-digit PIN</string>
     <string name="catch_up">Catch-up</string>
+    <string name="favorites">Favourites</string>
+    <string name="no_favorites">No favourites yet — long-press a channel to add it.</string>
+    <string name="locked">Locked — press Lock again to unlock</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="wrong_pin">Wrong PIN</string>
+    <string name="now_playing">Now playing</string>
 </resources>

@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <!-- ===== top bar ===== -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    <LinearLayout android:id="@+id/top_bar" android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal" android:gravity="center_vertical" android:padding="12dp">
 
         <TextView android:id="@+id/clock" android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -52,35 +52,36 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:baselineAligned="false">
 
         <!-- rail -->
-        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal" android:paddingVertical="20dp">
+        <LinearLayout android:id="@+id/rail_col" android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal" android:paddingVertical="20dp">
             <ImageButton android:id="@+id/rail_home" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_home" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Home" />
             <ImageButton android:id="@+id/rail_full" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_icon_well_active" android:tint="@color/tv_accent" android:src="@drawable/ic_fullscreen" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Fullscreen" />
-            <ImageButton android:id="@+id/rail_fav" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_heart" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Favorites" />
+            <ImageButton android:id="@+id/rail_fav" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_star" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Favorites" />
             <ImageButton android:id="@+id/rail_lock" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_lock" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Lock" />
             <ImageButton android:id="@+id/rail_search" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_search" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Search" />
             <ImageButton android:id="@+id/rail_settings" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_settings" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Settings" />
             <ImageButton android:id="@+id/rail_lang" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_globe" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Language" />
             <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
             <ImageButton android:id="@+id/rail_info" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginBottom="12dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_info" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Info" />
-            <ImageButton android:id="@+id/rail_exit" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_power" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Exit" />
+            <ImageButton android:id="@+id/rail_exit" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rail_btn" android:tint="@color/tv_muted" android:src="@drawable/ic_exit" android:scaleType="centerInside" android:padding="11dp" android:contentDescription="Exit" />
         </LinearLayout>
 
         <!-- categories -->
-        <LinearLayout android:layout_width="0dp" android:layout_weight="1.7" android:layout_height="match_parent" android:orientation="vertical" android:paddingHorizontal="10dp">
+        <LinearLayout android:id="@+id/col_categories" android:layout_width="0dp" android:layout_weight="1.7" android:layout_height="match_parent" android:orientation="vertical" android:paddingHorizontal="10dp">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CATEGORIES" android:textColor="@color/tv_muted" android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.12" android:paddingHorizontal="6dp" android:paddingVertical="10dp" />
             <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_categories" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" />
         </LinearLayout>
 
         <!-- channels -->
-        <LinearLayout android:layout_width="0dp" android:layout_weight="2.1" android:layout_height="match_parent" android:orientation="vertical" android:paddingHorizontal="10dp">
+        <LinearLayout android:id="@+id/col_channels" android:layout_width="0dp" android:layout_weight="2.1" android:layout_height="match_parent" android:orientation="vertical" android:paddingHorizontal="10dp">
             <TextView android:id="@+id/chan_cat_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_muted" android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.12" android:paddingHorizontal="6dp" android:paddingVertical="10dp" />
+            <EditText android:id="@+id/search_input" android:layout_width="match_parent" android:layout_height="wrap_content" android:visibility="gone" android:background="@drawable/bg_field" android:padding="12dp" android:layout_marginBottom="10dp" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted3" android:hint="Search channels…" android:inputType="text" android:maxLines="1" android:imeOptions="actionSearch" android:drawableStart="@drawable/ic_search" android:drawablePadding="8dp" />
             <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_channels" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" />
         </LinearLayout>
 
         <!-- stage: player + epg -->
         <LinearLayout android:layout_width="0dp" android:layout_weight="3.6" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
 
-            <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="3" android:background="@drawable/bg_player">
+            <FrameLayout android:id="@+id/player_frame" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="3" android:background="@drawable/bg_player" android:focusable="true" android:clickable="true">
                 <androidx.media3.ui.PlayerView android:id="@+id/player_view" android:layout_width="match_parent" android:layout_height="match_parent" android:focusable="true" app:use_controller="false" app:resize_mode="fit" />
 
                 <ProgressBar android:id="@+id/player_buffering" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:indeterminateTint="@color/tv_magenta" />
@@ -88,7 +89,10 @@
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top|start" android:layout_margin="14dp" android:background="@drawable/bg_live_badge" android:paddingHorizontal="11dp" android:paddingVertical="5dp" android:text="● LIVE" android:textColor="#FFFF8A95" android:textStyle="bold" android:textSize="12sp" />
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:orientation="horizontal" android:gravity="center_vertical" android:background="#B3000000" android:padding="14dp">
-                    <TextView android:id="@+id/now_logo" android:layout_width="44dp" android:layout_height="44dp" android:gravity="center" android:background="@drawable/bg_field" android:text="TV" android:textColor="@color/tv_magenta" android:textStyle="bold" android:textSize="13sp" />
+                    <FrameLayout android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/bg_logo">
+                        <TextView android:id="@+id/now_logo" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="TV" android:textColor="@color/tv_accent" android:fontFamily="@font/outfit" android:textStyle="bold" android:textSize="13sp" />
+                        <ImageView android:id="@+id/now_logo_img" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="6dp" android:scaleType="fitCenter" android:contentDescription="@null" />
+                    </FrameLayout>
                     <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="12dp">
                         <TextView android:id="@+id/now_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_text" android:textStyle="bold" android:textSize="17sp" android:singleLine="true" android:ellipsize="end" />
                         <TextView android:id="@+id/now_sub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" />
@@ -100,7 +104,7 @@
                 </LinearLayout>
             </FrameLayout>
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="2" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="16dp" android:layout_marginTop="14dp">
+            <LinearLayout android:id="@+id/epg_card" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="2" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="16dp" android:layout_marginTop="14dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Now &amp; Next" android:textColor="@color/tv_text" android:textStyle="bold" android:textSize="15sp" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TODAY" android:textColor="@color/tv_muted" android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.1" />
