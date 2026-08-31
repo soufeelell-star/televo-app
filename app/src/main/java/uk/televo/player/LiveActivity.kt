@@ -208,12 +208,12 @@ class LiveActivity : AppCompatActivity() {
 
     private fun applyAspect() {
         vlc?.videoScale = when (Prefs.aspectMode(this)) {
-            1 -> MediaPlayer.ScaleType.SURFACE_FIT_SCREEN
-            2 -> MediaPlayer.ScaleType.SURFACE_FILL
+            0 -> MediaPlayer.ScaleType.SURFACE_FILL        // Fill screen (stretch, no zoom, full res) — default
+            1 -> MediaPlayer.ScaleType.SURFACE_BEST_FIT    // Fit (true aspect, may show bars)
+            2 -> MediaPlayer.ScaleType.SURFACE_FIT_SCREEN  // Zoom (crop to fill)
             3 -> MediaPlayer.ScaleType.SURFACE_16_9
             4 -> MediaPlayer.ScaleType.SURFACE_4_3
-            5 -> MediaPlayer.ScaleType.SURFACE_ORIGINAL
-            else -> MediaPlayer.ScaleType.SURFACE_BEST_FIT
+            else -> MediaPlayer.ScaleType.SURFACE_ORIGINAL
         }
     }
 
@@ -225,12 +225,12 @@ class LiveActivity : AppCompatActivity() {
     }
 
     private fun aspectName(m: Int): String = when (m) {
-        1 -> getString(R.string.aspect_fill)
-        2 -> getString(R.string.aspect_stretch)
+        1 -> getString(R.string.aspect_fit)
+        2 -> getString(R.string.aspect_zoom)
         3 -> "16:9"
         4 -> "4:3"
         5 -> getString(R.string.aspect_original)
-        else -> getString(R.string.aspect_fit)
+        else -> getString(R.string.aspect_fill)
     }
 
     // ---------------- load ----------------
