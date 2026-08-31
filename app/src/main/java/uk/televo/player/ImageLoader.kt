@@ -1,6 +1,5 @@
 package uk.televo.player
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.LruCache
@@ -22,26 +21,6 @@ object ImageLoader {
         Net.run {
             val bmp = getOrFetch(url)
             if (bmp != null) Net.ui { if (into.tag == url) into.setImageBitmap(bmp) }
-        }
-    }
-
-    /**
-     * Load a channel logo: match the name against the tv-logos index first, then
-     * fall back to the provider's own logo. All resolution + fetching is off the
-     * UI thread, so it never slows the app.
-     */
-    fun loadChannel(ctx: Context, name: String, providerIcon: String?, into: ImageView) {
-        into.tag = name
-        into.setImageDrawable(null)
-        Net.run {
-            LogoIndex.ensureLoaded(ctx)
-            val primary = LogoIndex.urlFor(name)
-            var bmp: Bitmap? = primary?.let { getOrFetch(it) }
-            if (bmp == null && !providerIcon.isNullOrBlank() && providerIcon != primary) {
-                bmp = getOrFetch(providerIcon)
-            }
-            val b = bmp
-            if (b != null) Net.ui { if (into.tag == name) into.setImageBitmap(b) }
         }
     }
 
