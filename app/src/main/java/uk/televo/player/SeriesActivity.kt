@@ -36,7 +36,7 @@ class SeriesActivity : AppCompatActivity() {
                     select(c.categories[0])
                 }
             } catch (e: Api.ApiException) {
-                Net.ui { if (e.message == "not_active") { startActivity(Intent(this, ActivationActivity::class.java)); finish() } else b.gridStatus.text = "Couldn't load series." }
+                Net.ui { if (e.message == "not_active") { startActivity(Intent(this, LoginActivity::class.java)); finish() } else b.gridStatus.text = "Couldn't load series." }
             } catch (e: Exception) {
                 Net.ui { b.gridStatus.text = "Couldn't load series." }
             }

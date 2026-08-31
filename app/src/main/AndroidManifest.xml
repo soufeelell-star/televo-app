@@ -28,8 +28,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ServerSetupActivity" android:screenOrientation="landscape" />
-        <activity android:name=".ActivationActivity" android:screenOrientation="landscape" />
         <activity android:name=".HomeActivity" android:screenOrientation="landscape" />
         <activity android:name=".LiveActivity" android:screenOrientation="landscape" />
         <activity android:name=".LoginActivity" android:screenOrientation="landscape" />

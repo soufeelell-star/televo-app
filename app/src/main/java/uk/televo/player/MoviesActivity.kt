@@ -40,7 +40,7 @@ class MoviesActivity : AppCompatActivity() {
                     select(cat.categories[0])
                 }
             } catch (e: Api.ApiException) {
-                Net.ui { if (e.message == "not_active") { startActivity(Intent(this, ActivationActivity::class.java)); finish() } else b.gridStatus.text = "Couldn't load movies." }
+                Net.ui { if (e.message == "not_active") { startActivity(Intent(this, LoginActivity::class.java)); finish() } else b.gridStatus.text = "Couldn't load movies." }
             } catch (e: Exception) {
                 Net.ui { b.gridStatus.text = "Couldn't load movies." }
             }

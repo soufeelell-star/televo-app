@@ -4,58 +4,65 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import uk.televo.player.databinding.ActivityLoginBinding
 
-/** Manual login: enter Xtream username/password to activate this device instantly. */
+/**
+ * The only gate into the app: pick a server, type username + password, log in.
+ * No activation, no expiry — a successful login is saved and the customer stays
+ * logged in until they log out.
+ */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityLoginBinding
-    private var hosts: List<Api.HostItem> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(b.root)
-        loadHosts()
-        b.btnLogin.setOnClickListener { doLogin() }
-    }
 
-    private fun loadHosts() {
-        Net.run {
-            try {
-                val list = Api.hosts(this)
-                Net.ui {
-                    hosts = list
-                    val names = list.map { it.name }
-                    b.spHost.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-                        if (names.isEmpty()) listOf("No hosts") else names)
-                }
-            } catch (e: Exception) {
-                Net.ui { b.loginMsg.text = "Couldn't reach the server." }
-            }
-        }
+        // Server 1 / Server 2 / Server 3
+        b.spHost.adapter = ArrayAdapter(
+            this, android.R.layout.simple_spinner_dropdown_item, Servers.names
+        )
+
+        b.btnLogin.setOnClickListener { doLogin() }
+        b.inUser.requestFocus()
     }
 
     private fun doLogin() {
-        val idx = b.spHost.selectedItemPosition
-        if (hosts.isEmpty() || idx < 0 || idx >= hosts.size) { b.loginMsg.text = "No host available."; return }
-        val host = hosts[idx]
+        val server = Servers.at(b.spHost.selectedItemPosition)
+        if (server == null) { warn("Please choose a server."); return }
+
         val user = b.inUser.text.toString().trim()
         val pass = b.inPass.text.toString().trim()
-        if (user.isEmpty() || pass.isEmpty()) { b.loginMsg.text = "Enter your username and password."; return }
-        b.loginMsg.text = "Logging in…"
+        if (user.isEmpty() || pass.isEmpty()) { warn("Enter your username and password."); return }
+
+        info("Logging in…")
         b.btnLogin.isEnabled = false
+
         Net.run {
-            try {
-                val (ok, msg) = Api.selfActivate(this, host.id, user, pass)
-                Net.ui {
-                    b.btnLogin.isEnabled = true
-                    if (ok) { startActivity(Intent(this, HomeActivity::class.java)); finish() }
-                    else b.loginMsg.text = msg
+            val (ok, msg) = Api.xtreamLogin(server.baseUrl, user, pass)
+            Net.ui {
+                b.btnLogin.isEnabled = true
+                if (ok) {
+                    Prefs.saveLogin(this, server.name, server.baseUrl, user, pass)
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                } else {
+                    warn(msg)
                 }
-            } catch (e: Exception) {
-                Net.ui { b.btnLogin.isEnabled = true; b.loginMsg.text = "Login failed. Check your details." }
             }
         }
+    }
+
+    private fun warn(text: String) {
+        b.loginMsg.setTextColor(ContextCompat.getColor(this, R.color.tv_amber))
+        b.loginMsg.text = text
+    }
+
+    private fun info(text: String) {
+        b.loginMsg.setTextColor(ContextCompat.getColor(this, R.color.tv_muted))
+        b.loginMsg.text = text
     }
 }

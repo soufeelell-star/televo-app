@@ -1,45 +1,52 @@
 package uk.televo.player
 
 import android.content.Context
-import android.provider.Settings
-import java.security.MessageDigest
-import java.util.UUID
 
-/** Local storage: server address, api key, and this device's stable code. */
+/**
+ * Local storage for the customer's login: which server they picked and their
+ * Xtream username / password. No activation, no expiry — once saved, they stay
+ * logged in until they log out.
+ */
 object Prefs {
     private const val FILE = "televo"
 
     private fun sp(c: Context) = c.getSharedPreferences(FILE, Context.MODE_PRIVATE)
 
-    fun baseUrl(c: Context): String? = sp(c).getString("base_url", null)
-    fun apiKey(c: Context): String? = sp(c).getString("api_key", null)
+    fun host(c: Context): String? = sp(c).getString("host", null)
+    fun username(c: Context): String? = sp(c).getString("username", null)
+    fun password(c: Context): String? = sp(c).getString("password", null)
+    fun serverName(c: Context): String? = sp(c).getString("server_name", null)
 
-    fun setServer(c: Context, url: String, key: String) {
-        sp(c).edit().putString("base_url", normalize(url)).putString("api_key", key.trim()).apply()
+    fun isLoggedIn(c: Context): Boolean =
+        !host(c).isNullOrBlank() && !username(c).isNullOrBlank() && !password(c).isNullOrBlank()
+
+    fun saveLogin(c: Context, serverName: String, host: String, user: String, pass: String) {
+        sp(c).edit()
+            .putString("server_name", serverName)
+            .putString("host", normalize(host))
+            .putString("username", user.trim())
+            .putString("password", pass.trim())
+            .apply()
     }
 
-    fun normalize(url: String): String {
-        var u = url.trim().trimEnd('/')
-        if (!u.startsWith("http://") && !u.startsWith("https://")) u = "https://$u"
-        return u
+    fun logout(c: Context) {
+        sp(c).edit()
+            .remove("host").remove("username").remove("password").remove("server_name")
+            .apply()
     }
 
-    /** A stable, human-readable device code like TV:1A:2B:3C:4D:5E */
-    fun deviceCode(c: Context): String {
-        val s = sp(c)
-        s.getString("device_code", null)?.let { return it }
-        val code = generate(c)
-        s.edit().putString("device_code", code).apply()
-        return code
+    /** The saved login as a playlist the content screens (Live/Movies/Series/Radio) already understand. */
+    fun playlist(c: Context): Api.Playlist? {
+        if (!isLoggedIn(c)) return null
+        return Api.Playlist(
+            kind = "xtream",
+            label = serverName(c) ?: "Televo",
+            host = host(c),
+            username = username(c),
+            password = password(c),
+            url = null
+        )
     }
 
-    private fun generate(c: Context): String {
-        val android = try {
-            Settings.Secure.getString(c.contentResolver, Settings.Secure.ANDROID_ID)
-        } catch (e: Exception) { null }
-        val seed = (android?.takeIf { it.isNotBlank() } ?: UUID.randomUUID().toString())
-        val md = MessageDigest.getInstance("MD5").digest(seed.toByteArray())
-        val parts = (0 until 5).map { String.format("%02X", md[it].toInt() and 0xFF) }
-        return "TV:" + parts.joinToString(":")
-    }
+    fun normalize(url: String): String = url.trim().trimEnd('/')
 }

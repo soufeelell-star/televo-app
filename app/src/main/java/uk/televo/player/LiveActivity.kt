@@ -76,21 +76,11 @@ class LiveActivity : AppCompatActivity() {
                     return@run
                 }
                 playlist = xt
-                val status = runCatching { Api.status(this) }.getOrNull()
                 val cat = Xtream.loadCatalogue(xt)
                 Net.ui {
                     b.livePlaylist.text = xt.label
-                    b.liveActivation.text = when {
-                        status?.expiresAt == null && status?.active == true -> "Lifetime"
-                        status?.expiresAt != null -> "Until " + shortDate(status.expiresAt)
-                        else -> "Active"
-                    }
+                    b.liveActivation.text = "Active"
                     bindCatalogue(cat)
-                }
-            } catch (e: Api.ApiException) {
-                Net.ui {
-                    if (e.message == "not_active") { startActivity(Intent(this, ActivationActivity::class.java)); finish() }
-                    else { Toast.makeText(this, "Couldn't load channels.", Toast.LENGTH_LONG).show() }
                 }
             } catch (e: Exception) {
                 Net.ui { Toast.makeText(this, "Couldn't load channels.", Toast.LENGTH_LONG).show() }
@@ -146,9 +136,6 @@ class LiveActivity : AppCompatActivity() {
         val letters = name.filter { it.isLetterOrDigit() }
         return if (letters.length >= 2) letters.substring(0, 2).uppercase() else "TV"
     }
-
-    private fun shortDate(dt: String): String =
-        runCatching { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(java.sql.Timestamp.valueOf(dt).time)) }.getOrDefault(dt)
 
     private fun tickClock() {
         b.clock.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
