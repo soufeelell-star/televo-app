@@ -82,7 +82,7 @@
 
             <!-- Password -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="PASSWORD" android:textColor="@color/tv_muted" android:textSize="12.5sp" android:textStyle="bold" android:letterSpacing="0.08" />
-            <EditText android:id="@+id/in_pass" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="8dp" android:paddingHorizontal="18dp" android:background="@drawable/bg_field" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted3" android:hint="••••••••" android:inputType="textPassword" android:maxLines="1" android:fontFamily="@font/manrope" />
+            <EditText android:id="@+id/in_pass" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="8dp" android:paddingHorizontal="18dp" android:background="@drawable/bg_field" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted3" android:hint="Your password" android:inputType="textVisiblePassword" android:maxLines="1" android:fontFamily="@font/manrope" />
 
             <!-- Host URL -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="HOST URL" android:textColor="@color/tv_muted" android:textSize="12.5sp" android:textStyle="bold" android:letterSpacing="0.08" />

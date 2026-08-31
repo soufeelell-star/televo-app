@@ -32,10 +32,13 @@ class LoginActivity : AppCompatActivity() {
         refreshServers()
     }
 
+    /** Always shown as "Server 1", "Server 2", … regardless of the admin's host name. */
+    private fun label(index: Int): String = "Server ${index + 1}"
+
     private fun setServers(list: List<Servers.Server>) {
         servers = list
         if (selected >= list.size) selected = 0
-        b.hostName.text = list.getOrNull(selected)?.name ?: "No servers"
+        b.hostName.text = if (list.isEmpty()) "No servers" else label(selected)
     }
 
     private fun refreshServers() {
@@ -51,10 +54,10 @@ class LoginActivity : AppCompatActivity() {
     private fun pickHost() {
         if (servers.isEmpty()) return
         val menu = PopupMenu(this, b.hostRow)
-        servers.forEachIndexed { i, s -> menu.menu.add(0, i, i, s.name) }
+        servers.forEachIndexed { i, _ -> menu.menu.add(0, i, i, label(i)) }
         menu.setOnMenuItemClickListener { item ->
             selected = item.itemId
-            b.hostName.text = servers[selected].name
+            b.hostName.text = label(selected)
             true
         }
         menu.show()
@@ -76,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
             Net.ui {
                 b.btnLogin.isEnabled = true
                 if (ok) {
-                    Prefs.saveLogin(this, server.name, server.baseUrl, user, pass)
+                    Prefs.saveLogin(this, label(selected), server.baseUrl, user, pass)
                     startActivity(Intent(this, HomeActivity::class.java))
                     finish()
                 } else {
