@@ -11,14 +11,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -31,7 +29,6 @@ import java.util.Locale
 
 /** Professional Live TV: categories → channels → HD player + EPG, with fullscreen,
  *  favourites, search, catch-up and a parental lock. Max quality, resilient playback. */
-@OptIn(UnstableApi::class)
 class LiveActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityLiveBinding
@@ -95,12 +92,8 @@ class LiveActivity : AppCompatActivity() {
 
     private fun setupPlayer() {
         val selector = DefaultTrackSelector(this).apply {
-            setParameters(
-                buildUponParameters()
-                    .setForceHighestSupportedBitrate(true)   // never downscale
-                    .clearVideoSizeConstraints()             // allow 4K
-                    .setExceedVideoConstraintsIfNecessary(true)
-            )
+            // No resolution/bitrate cap → always play the stream's full quality (up to 4K).
+            setParameters(buildUponParameters().clearVideoSizeConstraints())
         }
         val loadControl = DefaultLoadControl.Builder()
             .setBufferDurationsMs(15000, 60000, 1200, 2500)  // fast start, resilient
