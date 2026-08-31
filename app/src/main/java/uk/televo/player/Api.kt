@@ -29,6 +29,9 @@ object Api {
         val key = Prefs.apiKey(c) ?: throw ApiException("No API key")
         val form = StringBuilder("action=").append(enc(action))
         form.append("&device_code=").append(enc(Prefs.deviceCode(c)))
+        // Also send the key as a parameter: some hosts (e.g. Hostinger/Apache)
+        // strip the Authorization header before it reaches PHP.
+        form.append("&api_key=").append(enc(key))
         for ((k, v) in params) form.append("&").append(enc(k)).append("=").append(enc(v))
 
         val conn = (URL(endpoint(c)).openConnection() as HttpURLConnection).apply {
