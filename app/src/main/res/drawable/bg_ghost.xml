@@ -14,6 +14,13 @@
             <stroke android:width="2dp" android:color="#FF9333EA" />
         </shape>
     </item>
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="12dp" />
+            <solid android:color="#26301A4D" />
+            <stroke android:width="1dp" android:color="#669333EA" />
+        </shape>
+    </item>
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="12dp" />

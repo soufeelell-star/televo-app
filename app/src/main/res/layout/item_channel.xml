@@ -14,5 +14,5 @@
 
     <TextView android:id="@+id/ch_name" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="14dp" android:text="Channel" android:textColor="@color/tv_text" android:textSize="16sp" android:singleLine="true" android:ellipsize="end" />
 
-    <TextView android:id="@+id/ch_num" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingHorizontal="10dp" android:paddingVertical="5dp" android:text="0" android:textColor="@color/tv_amber" android:textStyle="bold" android:textSize="13sp" android:fontFamily="monospace" />
+    <TextView android:id="@+id/ch_num" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_num" android:paddingHorizontal="10dp" android:paddingVertical="5dp" android:text="0" android:textColor="@color/tv_amber" android:textStyle="bold" android:textSize="13sp" android:fontFamily="monospace" />
 </LinearLayout>

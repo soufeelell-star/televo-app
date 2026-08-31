@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="11dp">
+
+    <TextView android:id="@+id/epg_time" android:layout_width="56dp" android:layout_height="wrap_content"
+        android:text="00:00" android:textColor="@color/tv_muted" android:textStyle="bold" android:textSize="13sp" android:fontFamily="monospace" />
+
+    <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+        <TextView android:id="@+id/epg_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Programme" android:textColor="@color/tv_text" android:textSize="14sp" android:textStyle="bold" />
+        <TextView android:id="@+id/epg_desc" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="2dp" android:text="" android:textColor="@color/tv_muted" android:textSize="12.5sp" android:maxLines="2" android:ellipsize="end" />
+    </LinearLayout>
+</LinearLayout>
