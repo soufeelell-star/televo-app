@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Televo</string>
+    <string name="waiting">Waiting for activation…</string>
+    <string name="device_code_label">YOUR DEVICE CODE</string>
+    <string name="check_activation">Check activation</string>
+    <string name="have_subscription">I have a subscription</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="activate">Activate</string>
+    <string name="live_tv">Live TV</string>
+    <string name="movies">Movies</string>
+    <string name="series">Series</string>
+    <string name="radio">Radio</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Televo" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/tv_purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/tv_magenta</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:windowBackground">@drawable/bg_gradient</item>
+        <item name="android:statusBarColor">@color/tv_ground</item>
+        <item name="android:navigationBarColor">@color/tv_ground</item>
+        <item name="android:textColorPrimary">@color/tv_text</item>
+    </style>
+</resources>

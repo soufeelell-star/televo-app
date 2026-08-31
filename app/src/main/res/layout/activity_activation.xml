@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="44dp"
+    android:baselineAligned="false">
+
+    <!-- Left: device code + status -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+            <ImageView android:layout_width="52dp" android:layout_height="52dp" android:src="@drawable/ic_televo" android:contentDescription="@string/app_name" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="@string/app_name" android:textColor="@color/tv_text" android:textSize="26sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="22dp" android:text="Activate your device" android:textColor="@color/tv_text" android:textSize="30sp" android:textStyle="bold" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Send this code to your Televo provider. When they activate it, your channels appear automatically." android:textColor="@color/tv_muted" android:textSize="15sp" android:maxWidth="440dp" />
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="24dp" android:layout_marginTop="22dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/device_code_label" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.1" />
+            <TextView android:id="@+id/tv_code" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="@color/tv_magenta" android:textSize="30sp" android:textStyle="bold" android:fontFamily="monospace" />
+        </LinearLayout>
+
+        <TextView android:id="@+id/tv_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:text="@string/waiting" android:textColor="@color/tv_amber" android:textSize="15sp" android:textStyle="bold" />
+
+        <Button android:id="@+id/btn_check" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:paddingHorizontal="26dp" android:text="@string/check_activation" android:textColor="@color/white" android:textStyle="bold" android:background="@drawable/bg_btn_primary" android:stateListAnimator="@null" />
+    </LinearLayout>
+
+    <!-- Right: manual login -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingStart="30dp">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="26dp" android:maxWidth="520dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/have_subscription" android:textColor="@color/tv_text" android:textSize="19sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Enter your login to activate instantly." android:textColor="@color/tv_muted" android:textSize="13sp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="Host" android:textColor="@color/tv_muted" android:textSize="12sp" android:textStyle="bold" />
+            <Spinner android:id="@+id/sp_host" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:background="@drawable/bg_field" android:padding="6dp" />
+
+            <EditText android:id="@+id/in_user" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:padding="13dp" android:background="@drawable/bg_field" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted" android:hint="@string/username" android:inputType="text" />
+            <EditText android:id="@+id/in_pass" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:padding="13dp" android:background="@drawable/bg_field" android:textColor="@color/tv_text" android:textColorHint="@color/tv_muted" android:hint="@string/password" android:inputType="text" />
+
+            <Button android:id="@+id/btn_activate" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:text="@string/activate" android:textColor="@color/white" android:textStyle="bold" android:background="@drawable/bg_btn_primary" android:stateListAnimator="@null" />
+            <TextView android:id="@+id/tv_login_msg" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="" android:textColor="@color/tv_amber" android:textSize="13sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
