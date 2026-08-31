@@ -111,6 +111,7 @@ class LiveActivity : AppCompatActivity() {
     // ---------------- player ----------------
 
     private var usingTs = false
+    private var altTried = false
 
     private fun setupPlayer() {
         val selector = DefaultTrackSelector(this).apply {
@@ -146,11 +147,12 @@ class LiveActivity : AppCompatActivity() {
                 b.nowQuality.text = qualityLabel(size.width, size.height)
             }
             override fun onPlayerError(error: PlaybackException) {
-                val p2 = playlist; val ch = currentChannel
-                // First failure on the HLS wrapper → retry the raw MPEG-TS stream (fixes many 4K channels).
-                if (p2 != null && ch != null && !usingTs) {
-                    usingTs = true; retries = 0
-                    setMedia(Xtream.playUrlTs(p2, ch.streamId))
+                val ch = currentChannel
+                // Try the other container once (ts <-> m3u8) before retrying — fixes 4K channels
+                // the HLS wrapper won't serve.
+                if (ch != null && !altTried) {
+                    altTried = true; retries = 0
+                    playVariant(!usingTs)
                     return
                 }
                 if (retries < 8) {
@@ -172,6 +174,14 @@ class LiveActivity : AppCompatActivity() {
         ex.setMediaItem(MediaItem.fromUri(uri))
         ex.playWhenReady = true
         ex.prepare()
+    }
+
+    /** Play the current channel as raw MPEG-TS (default, like other IPTV players) or HLS. */
+    private fun playVariant(ts: Boolean) {
+        val p = playlist ?: return
+        val ch = currentChannel ?: return
+        usingTs = ts
+        setMedia(if (ts) Xtream.playUrlTs(p, ch.streamId) else Xtream.playUrl(p, ch.streamId))
     }
 
     private fun qualityLabel(w: Int, h: Int): String {
@@ -263,7 +273,7 @@ class LiveActivity : AppCompatActivity() {
         currentChannel = ch
         currentStreamId = ch.streamId
         retries = 0
-        usingTs = false
+        altTried = false
         Prefs.saveLastChannel(this, ch.streamId)
         b.nowLogo.text = initials(ch.name)
         ImageLoader.load(ch.icon, b.nowLogoImg)
@@ -272,7 +282,7 @@ class LiveActivity : AppCompatActivity() {
         b.nowNum.text = "N° ${ch.num}"
         b.nowQuality.text = ""
         showOverlay()
-        setMedia(Xtream.playUrl(p, ch.streamId))
+        playVariant(ts = true)   // .ts first (best for 4K); falls back to HLS on error
         loadEpg(p, ch.streamId)
     }
 
@@ -298,7 +308,7 @@ class LiveActivity : AppCompatActivity() {
     /** Replay a past programme from the provider's catch-up archive. */
     private fun playCatchup(p: Api.Playlist, streamId: String, e: Xtream.Epg) {
         retries = 0
-        usingTs = true   // catch-up URL is already .ts — don't fall back to live
+        usingTs = true; altTried = true   // catch-up URL is already .ts — don't switch to live
         b.nowTitle.text = e.title
         b.nowSub.text = (currentCat?.name ?: "") + "  •  " + getString(R.string.catch_up)
         showOverlay()
