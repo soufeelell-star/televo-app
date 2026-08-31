@@ -53,6 +53,24 @@ class LiveActivity : AppCompatActivity() {
         override fun run() { tickClock(); clock.postDelayed(this, 30000) }
     }
 
+    // Auto-hide the on-screen info when idle, leaving just the stream.
+    private val overlayHandler = Handler(Looper.getMainLooper())
+    private val hideOverlay = Runnable {
+        b.liveBadge.visibility = View.GONE
+        b.nowBar.visibility = View.GONE
+    }
+    private fun showOverlay() {
+        b.liveBadge.visibility = View.VISIBLE
+        b.nowBar.visibility = View.VISIBLE
+        overlayHandler.removeCallbacks(hideOverlay)
+        overlayHandler.postDelayed(hideOverlay, 4000)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        showOverlay()
+    }
+
     // Keep the parsed catalogue for the session so re-entering Live TV is instant.
     companion object {
         private var cacheKey: String? = null
@@ -253,6 +271,7 @@ class LiveActivity : AppCompatActivity() {
         b.nowSub.text = currentCat?.name ?: ""
         b.nowNum.text = "N° ${ch.num}"
         b.nowQuality.text = ""
+        showOverlay()
         setMedia(Xtream.playUrl(p, ch.streamId))
         loadEpg(p, ch.streamId)
     }
@@ -282,6 +301,7 @@ class LiveActivity : AppCompatActivity() {
         usingTs = true   // catch-up URL is already .ts — don't fall back to live
         b.nowTitle.text = e.title
         b.nowSub.text = (currentCat?.name ?: "") + "  •  " + getString(R.string.catch_up)
+        showOverlay()
         setMedia(Xtream.catchupUrl(p, streamId, e.startUnix, e.stopUnix))
         Toast.makeText(this, "▶ " + e.title, Toast.LENGTH_SHORT).show()
     }
@@ -438,6 +458,6 @@ class LiveActivity : AppCompatActivity() {
     }
 
     override fun onResume() { super.onResume(); clock.postDelayed(clockTask, 30000); player?.playWhenReady = true }
-    override fun onStop() { super.onStop(); clock.removeCallbacks(clockTask); player?.pause() }
+    override fun onStop() { super.onStop(); clock.removeCallbacks(clockTask); overlayHandler.removeCallbacks(hideOverlay); player?.pause() }
     override fun onDestroy() { super.onDestroy(); player?.release(); player = null }
 }

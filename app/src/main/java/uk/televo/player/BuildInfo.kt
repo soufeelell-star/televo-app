@@ -1,5 +1,5 @@
 package uk.televo.player
 
 object BuildInfo {
-    const val VERSION = "1.8.3"
+    const val VERSION = "1.8.4"
 }
