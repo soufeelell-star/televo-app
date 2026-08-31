@@ -1,6 +1,7 @@
 package uk.televo.player
 
 import android.content.Context
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -54,6 +55,25 @@ object Api {
 
     /** Backwards-compatible helper the content screens use: the single saved login. */
     fun playlists(c: Context): List<Playlist> = listOfNotNull(Prefs.playlist(c))
+
+    /**
+     * Fetch the server list from the admin panel (panel.televo.uk). Returns the
+     * hosts the admin has marked active. Throws on network/parse failure so the
+     * caller can fall back to the cached/last-known list.
+     */
+    fun fetchHosts(): List<Servers.Server> {
+        val body = httpGet("${Servers.PANEL}/api/app_hosts.php")
+        val root = JSONObject(body)
+        val arr: JSONArray = root.optJSONArray("hosts") ?: JSONArray()
+        val out = ArrayList<Servers.Server>()
+        for (i in 0 until arr.length()) {
+            val h = arr.optJSONObject(i) ?: continue
+            val name = h.optString("name", "").trim()
+            val base = h.optString("base_url", "").trim()
+            if (name.isNotEmpty() && base.isNotEmpty()) out.add(Servers.Server(name, base))
+        }
+        return out
+    }
 
     private fun httpGet(spec: String): String {
         val conn = (URL(spec).openConnection() as HttpURLConnection).apply {

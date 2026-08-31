@@ -1,35 +1,26 @@
 package uk.televo.player
 
 /**
- * The list of servers the customer can pick from on the login screen.
+ * Servers shown on the login screen.
  *
- * ┌─────────────────────────────────────────────────────────────────────┐
- * │  EDIT THESE THREE URLs.                                              │
- * │                                                                     │
- * │  Put the real Xtream line for each server as  http://HOST:PORT      │
- * │  (the part BEFORE /player_api.php or /get.php in a working line).    │
- * │  No trailing slash. Keep http:// or https:// exactly as the         │
- * │  provider gives it.                                                  │
- * │                                                                     │
- * │  Example of a real value:  http://line.myprovider.tv:8080           │
- * └─────────────────────────────────────────────────────────────────────┘
+ * The live list comes from the admin panel (panel.televo.uk) so you can add,
+ * edit or remove servers WITHOUT rebuilding the app — see Api.fetchHosts().
+ * The list below is only a fallback used the very first time, before the app
+ * has ever reached the panel.
  */
 object Servers {
 
+    /** Admin panel base URL. The app reads the host list from here. */
+    const val PANEL = "https://panel.televo.uk"
+
     data class Server(val name: String, val baseUrl: String)
 
-    val ALL: List<Server> = listOf(
+    /** First-run fallback (used only until the panel list is fetched/cached). */
+    val FALLBACK: List<Server> = listOf(
         Server("Server 1", "http://vpn.mydnhost.com"),
         Server("Server 2", "http://vpn.cloudplayme.com"),
         Server("Server 3", "http://vpn.watchmenow.xyz"),
         Server("Server 4", "http://vpn.mydnwatch.net"),
         Server("Server 5", "http://vpn.dnwatchnow.com")
     )
-
-    val names: List<String> get() = ALL.map { it.name }
-
-    fun at(index: Int): Server? = ALL.getOrNull(index)
-
-    /** Find the saved server by its base URL (so Home can show the right name). */
-    fun byBaseUrl(url: String?): Server? = ALL.firstOrNull { it.baseUrl == url }
 }

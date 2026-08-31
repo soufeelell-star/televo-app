@@ -8,31 +8,53 @@ import androidx.core.content.ContextCompat
 import uk.televo.player.databinding.ActivityLoginBinding
 
 /**
- * The only gate into the app: pick a server, type username + password, log in.
- * No activation, no expiry — a successful login is saved and the customer stays
- * logged in until they log out.
+ * Pick a server, type username + password, log in. No activation, no expiry.
+ * The server list is loaded live from the admin panel (panel.televo.uk) so
+ * servers can be added/edited/removed without updating the app; a cached copy
+ * (or a built-in fallback) is shown instantly and while offline.
  */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityLoginBinding
+    private var servers: List<Servers.Server> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(b.root)
 
-        // Server 1 / Server 2 / Server 3
-        b.spHost.adapter = ArrayAdapter(
-            this, android.R.layout.simple_spinner_dropdown_item, Servers.names
-        )
+        // Show the best list we have right away (cache, or built-in fallback).
+        setServers(Prefs.servers(this))
 
         b.btnLogin.setOnClickListener { doLogin() }
         b.inUser.requestFocus()
+
+        // Then refresh from the panel in the background.
+        refreshServers()
+    }
+
+    private fun setServers(list: List<Servers.Server>) {
+        servers = list
+        val names = if (list.isEmpty()) listOf("No servers") else list.map { it.name }
+        val keep = b.spHost.selectedItemPosition
+        b.spHost.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, names)
+        if (keep in names.indices) b.spHost.setSelection(keep)
+    }
+
+    private fun refreshServers() {
+        Net.run {
+            val fresh = runCatching { Api.fetchHosts() }.getOrNull()
+            if (!fresh.isNullOrEmpty()) {
+                Prefs.cacheServers(this, fresh)
+                Net.ui { setServers(fresh) }
+            }
+        }
     }
 
     private fun doLogin() {
-        val server = Servers.at(b.spHost.selectedItemPosition)
-        if (server == null) { warn("Please choose a server."); return }
+        val idx = b.spHost.selectedItemPosition
+        val server = servers.getOrNull(idx)
+        if (server == null) { warn("No server available yet — check your internet."); return }
 
         val user = b.inUser.text.toString().trim()
         val pass = b.inPass.text.toString().trim()
