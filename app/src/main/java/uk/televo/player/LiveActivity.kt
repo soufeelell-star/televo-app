@@ -7,6 +7,7 @@ import android.os.Looper
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
@@ -274,6 +275,7 @@ class LiveActivity : AppCompatActivity() {
         }
         selectCategory(startCat, autoplay = startChan == null)
         startChan?.let { playChannel(it) }
+        b.rvChannels.post { b.rvChannels.requestFocus() }   // land the remote on the channel list
     }
 
     private fun selectCategory(category: Xtream.Category, autoplay: Boolean = false) {
@@ -285,8 +287,28 @@ class LiveActivity : AppCompatActivity() {
         if (autoplay && channels.isNotEmpty()) playChannel(channels[0])
     }
 
+    private var currentList: List<Xtream.Channel> = emptyList()
+
     private fun showChannels(channels: List<Xtream.Channel>) {
-        b.rvChannels.adapter = ChannelAdapter(channels, { ch -> playChannel(ch) }, { ch -> toggleFavourite(ch) })
+        currentList = channels
+        b.rvChannels.adapter = ChannelAdapter(channels, { ch -> onChannelClick(ch) }, { ch -> toggleFavourite(ch) })
+    }
+
+    /** OK on a channel: first press plays it; pressing OK again on the same channel goes fullscreen. */
+    private fun onChannelClick(ch: Xtream.Channel) {
+        if (ch.streamId == currentChannel?.streamId && !fullscreen) toggleFullscreen()
+        else playChannel(ch)
+    }
+
+    /** Channel up/down (zap) within the current list. */
+    private fun zap(delta: Int) {
+        val list = currentList
+        val ch = currentChannel ?: return
+        if (list.isEmpty()) return
+        val i = list.indexOfFirst { it.streamId == ch.streamId }
+        if (i < 0) return
+        val n = (i + delta + list.size) % list.size
+        playChannel(list[n])
     }
 
     private fun sortCats(list: List<Xtream.Category>): List<Xtream.Category> = when (Prefs.sortCategories(this)) {
@@ -475,6 +497,26 @@ class LiveActivity : AppCompatActivity() {
     }
 
     // ---------------- misc ----------------
+
+    override fun dispatchKeyEvent(e: KeyEvent): Boolean {
+        if (e.action == KeyEvent.ACTION_DOWN) {
+            // Dedicated channel-zap keys work anywhere.
+            when (e.keyCode) {
+                KeyEvent.KEYCODE_CHANNEL_UP -> { showOverlay(); zap(-1); return true }
+                KeyEvent.KEYCODE_CHANNEL_DOWN -> { showOverlay(); zap(+1); return true }
+            }
+            // In fullscreen the D-pad drives the player instead of moving focus.
+            if (fullscreen && !locked) {
+                when (e.keyCode) {
+                    KeyEvent.KEYCODE_DPAD_UP -> { showOverlay(); zap(-1); return true }
+                    KeyEvent.KEYCODE_DPAD_DOWN -> { showOverlay(); zap(+1); return true }
+                    KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { showOverlay(); return true }
+                    KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT -> { setFullscreen(false); return true }
+                }
+            }
+        }
+        return super.dispatchKeyEvent(e)
+    }
 
     override fun onBackPressed() {
         when {
