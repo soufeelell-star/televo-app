@@ -158,6 +158,10 @@ object Xtream {
     fun playUrl(p: Api.Playlist, streamId: String): String =
         "${p.host}/live/${p.username}/${p.password}/$streamId.m3u8"
 
+    /** Raw MPEG-TS live URL — fallback for channels/qualities the HLS wrapper won't serve (e.g. some 4K). */
+    fun playUrlTs(p: Api.Playlist, streamId: String): String =
+        "${p.host}/live/${p.username}/${p.password}/$streamId.ts"
+
     /**
      * Catch-up / time-shift URL: play from [minutes] ago. Works where the
      * provider supports Xtream time-shift; otherwise the stream simply won't

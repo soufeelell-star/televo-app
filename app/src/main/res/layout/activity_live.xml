@@ -79,7 +79,7 @@
         </LinearLayout>
 
         <!-- stage: player + epg -->
-        <LinearLayout android:layout_width="0dp" android:layout_weight="3.6" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
+        <LinearLayout android:id="@+id/stage_col" android:layout_width="0dp" android:layout_weight="3.6" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
 
             <FrameLayout android:id="@+id/player_frame" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="3" android:background="@drawable/bg_player" android:focusable="true" android:clickable="true">
                 <androidx.media3.ui.PlayerView android:id="@+id/player_view" android:layout_width="match_parent" android:layout_height="match_parent" android:focusable="true" app:use_controller="false" app:resize_mode="fit" />
@@ -99,7 +99,7 @@
                     </LinearLayout>
                     <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="end">
                         <TextView android:id="@+id/now_num" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_accent" android:textStyle="bold" android:textSize="15sp" android:fontFamily="@font/jbmono" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1080p · Stereo" android:textColor="@color/tv_muted" android:textSize="11sp" />
+                        <TextView android:id="@+id/now_quality" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="@color/tv_muted" android:textSize="11sp" android:fontFamily="@font/jbmono" />
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

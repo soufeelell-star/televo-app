@@ -17,7 +17,9 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.DefaultLoadControl
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -90,17 +92,25 @@ class LiveActivity : AppCompatActivity() {
 
     // ---------------- player ----------------
 
+    private var usingTs = false
+
     private fun setupPlayer() {
         val selector = DefaultTrackSelector(this).apply {
-            // No resolution/bitrate cap → always play the stream's full quality (up to 4K).
-            setParameters(buildUponParameters().clearVideoSizeConstraints())
+            // No resolution/viewport cap → always select the stream's full quality (up to 4K).
+            setParameters(
+                buildUponParameters()
+                    .clearVideoSizeConstraints()
+                    .clearViewportSizeConstraints()
+            )
         }
         val loadControl = DefaultLoadControl.Builder()
             .setBufferDurationsMs(15000, 60000, 1200, 2500)  // fast start, resilient
             .setPrioritizeTimeOverSizeThresholds(true)
             .build()
+        val renderers = DefaultRenderersFactory(this)
+            .setEnableDecoderFallback(true)                  // fall back to another decoder for 4K/HEVC
 
-        val p = ExoPlayer.Builder(this)
+        val p = ExoPlayer.Builder(this, renderers)
             .setTrackSelector(selector)
             .setLoadControl(loadControl)
             .build()
@@ -114,9 +124,18 @@ class LiveActivity : AppCompatActivity() {
                 b.playerBuffering.visibility = if (state == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
                 if (state == Player.STATE_READY) retries = 0
             }
+            override fun onVideoSizeChanged(size: VideoSize) {
+                b.nowQuality.text = qualityLabel(size.width, size.height)
+            }
             override fun onPlayerError(error: PlaybackException) {
-                // Auto-recover from transient stream drops so live doesn't just stop.
-                if (retries < 6) {
+                val p2 = playlist; val ch = currentChannel
+                // First failure on the HLS wrapper → retry the raw MPEG-TS stream (fixes many 4K channels).
+                if (p2 != null && ch != null && !usingTs) {
+                    usingTs = true; retries = 0
+                    setMedia(Xtream.playUrlTs(p2, ch.streamId))
+                    return
+                }
+                if (retries < 8) {
                     retries++
                     clock.postDelayed({
                         player?.let { it.seekToDefaultPosition(); it.prepare(); it.playWhenReady = true }
@@ -128,6 +147,24 @@ class LiveActivity : AppCompatActivity() {
             }
         })
         player = p
+    }
+
+    private fun setMedia(uri: String) {
+        val ex = player ?: return
+        ex.setMediaItem(MediaItem.fromUri(uri))
+        ex.playWhenReady = true
+        ex.prepare()
+    }
+
+    private fun qualityLabel(w: Int, h: Int): String {
+        if (w <= 0 || h <= 0) return ""
+        val tag = when {
+            h >= 2000 || w >= 3000 -> "4K"
+            h >= 1080 -> "1080p"
+            h >= 720 -> "720p"
+            else -> "SD"
+        }
+        return "${w}×${h} · $tag"
     }
 
     // ---------------- load ----------------
@@ -208,15 +245,15 @@ class LiveActivity : AppCompatActivity() {
         currentChannel = ch
         currentStreamId = ch.streamId
         retries = 0
+        usingTs = false
         Prefs.saveLastChannel(this, ch.streamId)
         b.nowLogo.text = initials(ch.name)
         ImageLoader.load(ch.icon, b.nowLogoImg)
         b.nowTitle.text = ch.name
         b.nowSub.text = currentCat?.name ?: ""
         b.nowNum.text = "N° ${ch.num}"
-        ex.setMediaItem(MediaItem.fromUri(Xtream.playUrl(p, ch.streamId)))
-        ex.playWhenReady = true
-        ex.prepare()
+        b.nowQuality.text = ""
+        setMedia(Xtream.playUrl(p, ch.streamId))
         loadEpg(p, ch.streamId)
     }
 
@@ -241,13 +278,11 @@ class LiveActivity : AppCompatActivity() {
 
     /** Replay a past programme from the provider's catch-up archive. */
     private fun playCatchup(p: Api.Playlist, streamId: String, e: Xtream.Epg) {
-        val ex = player ?: return
         retries = 0
+        usingTs = true   // catch-up URL is already .ts — don't fall back to live
         b.nowTitle.text = e.title
         b.nowSub.text = (currentCat?.name ?: "") + "  •  " + getString(R.string.catch_up)
-        ex.setMediaItem(MediaItem.fromUri(Xtream.catchupUrl(p, streamId, e.startUnix, e.stopUnix)))
-        ex.playWhenReady = true
-        ex.prepare()
+        setMedia(Xtream.catchupUrl(p, streamId, e.startUnix, e.stopUnix))
         Toast.makeText(this, "▶ " + e.title, Toast.LENGTH_SHORT).show()
     }
 
@@ -263,6 +298,13 @@ class LiveActivity : AppCompatActivity() {
         b.colCategories.visibility = vis
         b.colChannels.visibility = vis
         b.epgCard.visibility = vis
+        // Fill the whole screen when fullscreen (zoom keeps aspect, no black bars); fit otherwise.
+        b.playerView.resizeMode = if (on)
+            androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        else
+            androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
+        val pad = if (on) 0 else (14 * resources.displayMetrics.density).toInt()
+        b.stageCol.setPadding(pad, pad, pad, pad)
         b.railFull.setColorFilter(ContextCompat.getColor(this, if (on) R.color.tv_accent else R.color.tv_muted))
     }
 
