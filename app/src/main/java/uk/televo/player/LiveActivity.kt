@@ -25,6 +25,7 @@ class LiveActivity : AppCompatActivity() {
     private var playlist: Api.Playlist? = null
     private var catalogue: Xtream.Catalogue? = null
     private var currentCat: Xtream.Category? = null
+    private var currentStreamId: String? = null
 
     private val clock = Handler(Looper.getMainLooper())
     private val clockTask = object : Runnable {
@@ -146,9 +147,8 @@ class LiveActivity : AppCompatActivity() {
         b.nowTitle.text = ch.name
         b.nowSub.text = currentCat?.name ?: ""
         b.nowNum.text = "N° ${ch.num}"
-        val ts = Prefs.timeshift(this)
-        val uri = if (ts > 0) Xtream.timeshiftUrl(p, ch.streamId, ts) else Xtream.playUrl(p, ch.streamId)
-        ex.setMediaItem(MediaItem.fromUri(uri))
+        currentStreamId = ch.streamId
+        ex.setMediaItem(MediaItem.fromUri(Xtream.playUrl(p, ch.streamId)))
         ex.playWhenReady = true
         ex.prepare()
         loadEpg(p, ch.streamId)
@@ -158,12 +158,27 @@ class LiveActivity : AppCompatActivity() {
         b.rvEpg.adapter = null
         b.epgEmpty.visibility = View.GONE
         Net.run {
-            val list = Xtream.shortEpg(p, streamId)
+            // full listing incl. the provider's catch-up archive
+            val list = Xtream.catchupEpg(p, streamId).ifEmpty { Xtream.shortEpg(p, streamId) }
             Net.ui {
                 if (list.isEmpty()) b.epgEmpty.visibility = View.VISIBLE
-                else { b.epgEmpty.visibility = View.GONE; b.rvEpg.adapter = EpgAdapter(list) }
+                else {
+                    b.epgEmpty.visibility = View.GONE
+                    b.rvEpg.adapter = EpgAdapter(list) { e -> playCatchup(p, streamId, e) }
+                }
             }
         }
+    }
+
+    /** Replay a past programme from the provider's catch-up archive. */
+    private fun playCatchup(p: Api.Playlist, streamId: String, e: Xtream.Epg) {
+        val ex = player ?: return
+        b.nowTitle.text = e.title
+        b.nowSub.text = (currentCat?.name ?: "") + "  •  " + getString(R.string.catch_up)
+        ex.setMediaItem(MediaItem.fromUri(Xtream.catchupUrl(p, streamId, e.startUnix, e.stopUnix)))
+        ex.playWhenReady = true
+        ex.prepare()
+        Toast.makeText(this, "▶ " + e.title, Toast.LENGTH_SHORT).show()
     }
 
     private fun initials(name: String): String {

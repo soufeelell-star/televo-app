@@ -20,7 +20,13 @@ object Xtream {
         val name: String, val streamId: String, val num: String,
         val icon: String?, val categoryId: String, val epgId: String?
     )
-    data class Epg(val time: String, val title: String, val desc: String, val now: Boolean)
+    data class Epg(
+        val time: String, val title: String, val desc: String, val now: Boolean,
+        val hasArchive: Boolean = false, val startUnix: Long = 0, val stopUnix: Long = 0, val past: Boolean = false
+    ) {
+        /** A programme that already aired and is available to replay from the provider's archive. */
+        val catchup: Boolean get() = past && hasArchive && startUnix > 0 && stopUnix > startUnix
+    }
 
     /** Full catalogue: categories (with counts) + channels grouped by category id. */
     class Catalogue(
@@ -104,6 +110,48 @@ object Xtream {
             )
         }
         return out
+    }
+
+    /**
+     * Catch-up EPG: the fuller day listing (past + now + next) with the provider's
+     * archive flags, so past programmes that were recorded can be replayed.
+     */
+    fun catchupEpg(p: Api.Playlist, streamId: String): List<Epg> {
+        val host = p.host ?: return emptyList()
+        val user = p.username ?: return emptyList()
+        val pass = p.password ?: return emptyList()
+        val url = "$host/player_api.php?username=${enc(user)}&password=${enc(pass)}&action=get_simple_data_table&stream_id=$streamId"
+        val body = runCatching { httpGet(url) }.getOrNull() ?: return emptyList()
+        val root = runCatching { JSONObject(body) }.getOrNull() ?: return emptyList()
+        val arr = root.optJSONArray("epg_listings") ?: return emptyList()
+        val now = System.currentTimeMillis() / 1000
+        val out = ArrayList<Epg>()
+        for (i in 0 until arr.length()) {
+            val o = arr.optJSONObject(i) ?: continue
+            val start = o.optString("start_timestamp", "0").toLongOrNull() ?: 0
+            val stop = o.optString("stop_timestamp", "0").toLongOrNull() ?: 0
+            val hasArchive = o.optString("has_archive", "0") == "1" || o.optInt("has_archive", 0) == 1
+            out.add(
+                Epg(
+                    time = if (start > 0) fmt(start) else "",
+                    title = decode(o.optString("title", "")),
+                    desc = decode(o.optString("description", "")),
+                    now = start in 1..now && now < stop,
+                    hasArchive = hasArchive,
+                    startUnix = start,
+                    stopUnix = stop,
+                    past = stop in 1 until now
+                )
+            )
+        }
+        return out
+    }
+
+    /** Playback URL for a catch-up (archived) programme. */
+    fun catchupUrl(p: Api.Playlist, streamId: String, startUnix: Long, stopUnix: Long): String {
+        val durationMin = (((stopUnix - startUnix) / 60).coerceAtLeast(1)).toInt()
+        val start = SimpleDateFormat("yyyy-MM-dd:HH-mm", Locale.US).format(Date(startUnix * 1000L))
+        return "${p.host}/timeshift/${p.username}/${p.password}/$durationMin/$start/$streamId.ts"
     }
 
     /** Live stream URL (HLS preferred). */

@@ -27,4 +27,5 @@
     <string name="server">Serveur</string>
     <string name="account">Compte</string>
     <string name="power_msg">Que voulez-vous faire ?</string>
+    <string name="catch_up">Rattrapage</string>
 </resources>

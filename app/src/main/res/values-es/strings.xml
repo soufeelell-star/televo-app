@@ -27,4 +27,5 @@
     <string name="server">Servidor</string>
     <string name="account">Cuenta</string>
     <string name="power_msg">¿Qué quieres hacer?</string>
+    <string name="catch_up">Repetición</string>
 </resources>

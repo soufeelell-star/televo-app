@@ -48,4 +48,5 @@
     <string name="new_pin">New PIN (4 digits)</string>
     <string name="pin_changed">PIN updated</string>
     <string name="pin_invalid">Enter a 4-digit PIN</string>
+    <string name="catch_up">Catch-up</string>
 </resources>

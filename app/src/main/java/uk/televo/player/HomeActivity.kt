@@ -19,7 +19,6 @@ class HomeActivity : AppCompatActivity() {
 
     private val langCodes = listOf("en", "fr", "es", "pt", "ar")
     private val langNames = listOf("English", "Français", "Español", "Português", "العربية")
-    private val tsMinutes = listOf(0, 60, 120, 360)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
 
         b.actRefresh.setOnClickListener { refresh() }
         b.actLang.setOnClickListener { languageDialog() }
-        b.actTimeshift.setOnClickListener { timeshiftDialog() }
+        b.actTimeshift.setOnClickListener { startActivity(Intent(this, LiveActivity::class.java)) }
         b.actSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         b.actInfo.setOnClickListener { infoDialog() }
         b.actPower.setOnClickListener { powerDialog() }
@@ -58,7 +57,7 @@ class HomeActivity : AppCompatActivity() {
         b.chipSeries.text = "● " + getString(R.string.cached)
         b.chipRadio.text = "● " + getString(R.string.ready)
         b.langLabel.text = getString(R.string.language) + " (" + Prefs.language(this).uppercase() + ")"
-        b.tsLabel.text = timeshiftLabel()
+        b.tsLabel.text = getString(R.string.catch_up)
     }
 
     private fun expiryText(): String {
@@ -68,11 +67,6 @@ class HomeActivity : AppCompatActivity() {
         return getString(R.string.expires) + " " + d
     }
 
-    private fun timeshiftLabel(): String {
-        val m = Prefs.timeshift(this)
-        return if (m <= 0) getString(R.string.time_shift)
-        else getString(R.string.time_shift) + " (-" + (m / 60) + "h)"
-    }
 
     // ---------- refresh (re-check the subscription) ----------
 
@@ -106,21 +100,6 @@ class HomeActivity : AppCompatActivity() {
             .show()
     }
 
-    // ---------- time shift ----------
-
-    private fun timeshiftDialog() {
-        val labels = tsMinutes.map { if (it == 0) getString(R.string.live) else "-" + (it / 60) + "h" }.toTypedArray()
-        val current = tsMinutes.indexOf(Prefs.timeshift(this)).coerceAtLeast(0)
-        MaterialAlertDialogBuilder(this, R.style.Theme_Televo_Dialog)
-            .setTitle(R.string.time_shift)
-            .setSingleChoiceItems(labels, current) { dialog, which ->
-                dialog.dismiss()
-                Prefs.setTimeshift(this, tsMinutes[which])
-                b.tsLabel.text = timeshiftLabel()
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
-    }
 
     // ---------- info / about ----------
 

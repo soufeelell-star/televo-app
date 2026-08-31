@@ -27,4 +27,5 @@
     <string name="server">الخادم</string>
     <string name="account">الحساب</string>
     <string name="power_msg">ماذا تريد أن تفعل؟</string>
+    <string name="catch_up">المشاهدة اللاحقة</string>
 </resources>

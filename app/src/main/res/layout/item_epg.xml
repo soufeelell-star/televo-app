@@ -3,14 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="11dp">
+    android:background="@drawable/bg_row"
+    android:focusable="true"
+    android:clickable="true"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="11dp"
+    android:layout_marginBottom="6dp">
 
     <TextView android:id="@+id/epg_time" android:layout_width="56dp" android:layout_height="wrap_content"
         android:text="00:00" android:textColor="@color/tv_muted" android:textStyle="bold" android:textSize="13sp" android:fontFamily="@font/jbmono" />
 
     <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
-        <TextView android:id="@+id/epg_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Programme" android:textColor="@color/tv_text" android:textSize="14sp" android:textStyle="bold" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:id="@+id/epg_title" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                android:text="Programme" android:textColor="@color/tv_text" android:textSize="14.5sp" android:textStyle="bold" android:singleLine="true" android:ellipsize="end" />
+            <TextView android:id="@+id/epg_tag" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="9dp" android:paddingVertical="3dp" android:text="↺ CATCH-UP" android:textColor="@color/tv_good" android:textSize="10.5sp" android:textStyle="bold" android:visibility="gone" />
+        </LinearLayout>
         <TextView android:id="@+id/epg_desc" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="2dp" android:text="" android:textColor="@color/tv_muted" android:textSize="12.5sp" android:maxLines="2" android:ellipsize="end" />
     </LinearLayout>
