@@ -13,17 +13,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
-import androidx.media3.common.VideoSize
-import androidx.media3.exoplayer.DefaultLoadControl
-import androidx.media3.exoplayer.DefaultRenderersFactory
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import android.net.Uri
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.videolan.libvlc.LibVLC
+import org.videolan.libvlc.Media
+import org.videolan.libvlc.MediaPlayer
 import uk.televo.player.databinding.ActivityLiveBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -34,7 +29,8 @@ import java.util.Locale
 class LiveActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityLiveBinding
-    private var player: ExoPlayer? = null
+    private var libVlc: LibVLC? = null
+    private var vlc: MediaPlayer? = null
     private var playlist: Api.Playlist? = null
     private var catalogue: Xtream.Catalogue? = null
     private var allChannels: List<Xtream.Channel> = emptyList()
@@ -114,66 +110,45 @@ class LiveActivity : AppCompatActivity() {
     private var altTried = false
 
     private fun setupPlayer() {
-        val selector = DefaultTrackSelector(this).apply {
-            // No resolution/viewport cap → always select the stream's full quality (up to 4K).
-            setParameters(
-                buildUponParameters()
-                    .clearVideoSizeConstraints()
-                    .clearViewportSizeConstraints()
-            )
+        val options = ArrayList<String>().apply {
+            add("--no-drop-late-frames")
+            add("--no-skip-frames")
+            add("--network-caching=1500")
+            add("--avcodec-hw=any")      // hardware where possible, software fallback for 4K/HEVC
+            add("--audio-time-stretch")
         }
-        val loadControl = DefaultLoadControl.Builder()
-            .setBufferDurationsMs(15000, 60000, 1200, 2500)  // fast start, resilient
-            .setPrioritizeTimeOverSizeThresholds(true)
-            .build()
-        val renderers = DefaultRenderersFactory(this)
-            .setEnableDecoderFallback(true)                  // fall back to another decoder for 4K/HEVC
-
-        val p = ExoPlayer.Builder(this, renderers)
-            .setTrackSelector(selector)
-            .setLoadControl(loadControl)
-            .build()
-        p.setWakeMode(C.WAKE_MODE_NETWORK)                    // keep streaming under doze
-        b.playerView.player = p
-        b.playerView.keepScreenOn = true
+        val lib = LibVLC(this, options)
+        val mp = MediaPlayer(lib)
+        mp.attachViews(b.playerView, null, false, false)
+        mp.videoScale = MediaPlayer.ScaleType.SURFACE_BEST_FIT
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        p.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(state: Int) {
-                b.playerBuffering.visibility = if (state == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
-                if (state == Player.STATE_READY) retries = 0
-            }
-            override fun onVideoSizeChanged(size: VideoSize) {
-                b.nowQuality.text = qualityLabel(size.width, size.height)
-            }
-            override fun onPlayerError(error: PlaybackException) {
-                val ch = currentChannel
-                // Try the other container once (ts <-> m3u8) before retrying — fixes 4K channels
-                // the HLS wrapper won't serve.
-                if (ch != null && !altTried) {
-                    altTried = true; retries = 0
-                    playVariant(!usingTs)
-                    return
-                }
-                if (retries < 8) {
-                    retries++
-                    clock.postDelayed({
-                        player?.let { it.seekToDefaultPosition(); it.prepare(); it.playWhenReady = true }
-                    }, 1500)
-                } else {
+        mp.setEventListener { ev ->
+            when (ev.type) {
+                MediaPlayer.Event.Buffering ->
+                    b.playerBuffering.visibility = if (ev.buffering < 100f) View.VISIBLE else View.GONE
+                MediaPlayer.Event.Playing -> {
                     b.playerBuffering.visibility = View.GONE
-                    b.nowSub.text = "Can't play this channel"
+                    retries = 0
+                    updateQuality()
                 }
+                MediaPlayer.Event.Vout -> updateQuality()
+                MediaPlayer.Event.EncounteredError -> onPlayError()
+                MediaPlayer.Event.EndReached -> onPlayError()   // live shouldn't end — recover
             }
-        })
-        player = p
+        }
+        libVlc = lib
+        vlc = mp
     }
 
     private fun setMedia(uri: String) {
-        val ex = player ?: return
-        ex.setMediaItem(MediaItem.fromUri(uri))
-        ex.playWhenReady = true
-        ex.prepare()
+        val lib = libVlc ?: return
+        val m = Media(lib, Uri.parse(uri))
+        m.setHWDecoderEnabled(true, false)     // HW decode, auto software fallback (this fixes 4K/HEVC)
+        m.addOption(":network-caching=1500")
+        vlc?.media = m
+        m.release()
+        vlc?.play()
     }
 
     /** Play the current channel as raw MPEG-TS (default, like other IPTV players) or HLS. */
@@ -182,6 +157,27 @@ class LiveActivity : AppCompatActivity() {
         val ch = currentChannel ?: return
         usingTs = ts
         setMedia(if (ts) Xtream.playUrlTs(p, ch.streamId) else Xtream.playUrl(p, ch.streamId))
+    }
+
+    private fun onPlayError() {
+        val ch = currentChannel
+        if (ch != null && !altTried) {          // try the other container once (ts <-> m3u8)
+            altTried = true; retries = 0
+            playVariant(!usingTs)
+            return
+        }
+        if (retries < 8) {
+            retries++
+            clock.postDelayed({ playVariant(usingTs) }, 1500)
+        } else {
+            b.playerBuffering.visibility = View.GONE
+            b.nowSub.text = "Can't play this channel"
+        }
+    }
+
+    private fun updateQuality() {
+        val t = vlc?.currentVideoTrack ?: return
+        b.nowQuality.text = qualityLabel(t.width, t.height)
     }
 
     private fun qualityLabel(w: Int, h: Int): String {
@@ -269,7 +265,6 @@ class LiveActivity : AppCompatActivity() {
 
     private fun playChannel(ch: Xtream.Channel) {
         val p = playlist ?: return
-        val ex = player ?: return
         currentChannel = ch
         currentStreamId = ch.streamId
         retries = 0
@@ -328,11 +323,8 @@ class LiveActivity : AppCompatActivity() {
         b.colCategories.visibility = vis
         b.colChannels.visibility = vis
         b.epgCard.visibility = vis
-        // Fill the whole screen when fullscreen (zoom keeps aspect, no black bars); fit otherwise.
-        b.playerView.resizeMode = if (on)
-            androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-        else
-            androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
+        // Fill the whole screen when fullscreen (crop keeps aspect, no black bars); fit otherwise.
+        vlc?.videoScale = if (on) MediaPlayer.ScaleType.SURFACE_FIT_SCREEN else MediaPlayer.ScaleType.SURFACE_BEST_FIT
         val pad = if (on) 0 else (14 * resources.displayMetrics.density).toInt()
         b.stageCol.setPadding(pad, pad, pad, pad)
         b.railFull.setColorFilter(ContextCompat.getColor(this, if (on) R.color.tv_accent else R.color.tv_muted))
@@ -467,7 +459,12 @@ class LiveActivity : AppCompatActivity() {
         return if (letters.length >= 2) letters.substring(0, 2).uppercase() else "TV"
     }
 
-    override fun onResume() { super.onResume(); clock.postDelayed(clockTask, 30000); player?.playWhenReady = true }
-    override fun onStop() { super.onStop(); clock.removeCallbacks(clockTask); overlayHandler.removeCallbacks(hideOverlay); player?.pause() }
-    override fun onDestroy() { super.onDestroy(); player?.release(); player = null }
+    override fun onResume() { super.onResume(); clock.postDelayed(clockTask, 30000); vlc?.let { if (!it.isPlaying) it.play() } }
+    override fun onStop() { super.onStop(); clock.removeCallbacks(clockTask); overlayHandler.removeCallbacks(hideOverlay); vlc?.pause() }
+    override fun onDestroy() {
+        super.onDestroy()
+        vlc?.let { it.stop(); it.detachViews(); it.release() }
+        libVlc?.release()
+        vlc = null; libVlc = null
+    }
 }

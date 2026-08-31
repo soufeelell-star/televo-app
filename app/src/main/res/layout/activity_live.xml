@@ -82,7 +82,7 @@
         <LinearLayout android:id="@+id/stage_col" android:layout_width="0dp" android:layout_weight="3.6" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
 
             <FrameLayout android:id="@+id/player_frame" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="3" android:background="@drawable/bg_player" android:focusable="true" android:clickable="true">
-                <androidx.media3.ui.PlayerView android:id="@+id/player_view" android:layout_width="match_parent" android:layout_height="match_parent" android:focusable="true" app:use_controller="false" app:resize_mode="fit" />
+                <org.videolan.libvlc.util.VLCVideoLayout android:id="@+id/player_view" android:layout_width="match_parent" android:layout_height="match_parent" />
 
                 <ProgressBar android:id="@+id/player_buffering" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:indeterminateTint="@color/tv_magenta" />
 

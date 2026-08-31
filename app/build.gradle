@@ -11,8 +11,10 @@ android {
         applicationId 'uk.televo.player'
         minSdk 21
         targetSdk 34
-        versionCode 17
-        versionName '1.8.5'
+        versionCode 18
+        versionName '1.9.0'
+        // libVLC ships native .so per ABI — keep the arm ABIs that cover TV boxes & phones
+        ndk { abiFilters 'armeabi-v7a', 'arm64-v8a' }
     }
 
     signingConfigs {
@@ -50,4 +52,7 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer:$media3"
     implementation "androidx.media3:media3-exoplayer-hls:$media3"
     implementation "androidx.media3:media3-ui:$media3"
+
+    // VLC engine for Live TV — software-decodes 4K/HEVC/10-bit that ExoPlayer can't
+    implementation 'org.videolan.android:libvlc-all:3.6.0'
 }
