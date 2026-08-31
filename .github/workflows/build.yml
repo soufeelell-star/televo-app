@@ -31,7 +31,19 @@ jobs:
           cache-disabled: true
 
       - name: Build release APK
-        run: gradle assembleRelease --stacktrace --no-daemon
+        run: |
+          set -o pipefail
+          gradle assembleRelease --stacktrace --no-daemon 2>&1 | tee build.log
+
+      - name: Report build log on failure
+        if: failure()
+        run: |
+          tail -c 90000 build.log > build-error.log || true
+          git config user.name ci
+          git config user.email ci@local
+          git add -f build-error.log
+          git commit -m "CI build log [skip ci]"
+          git push origin HEAD:main
 
       - name: Collect APK
         run: |
