@@ -30,17 +30,17 @@ class EpgAdapter(
             holder.b.epgTitle.setTextColor(Color.parseColor("#F4F6FB"))
         }
 
-        // Catch-up: past programmes the provider kept in its archive are replayable.
+        // Every row is focusable so the remote can scroll the guide; only archived
+        // (catch-up) rows are clickable to replay.
+        holder.b.root.isFocusable = true
         if (e.catchup) {
             holder.b.epgTag.visibility = View.VISIBLE
-            holder.b.root.isFocusable = true
             holder.b.root.isClickable = true
             holder.b.root.setOnClickListener { onCatchup(e) }
         } else {
             holder.b.epgTag.visibility = View.GONE
             holder.b.root.setOnClickListener(null)
             holder.b.root.isClickable = false
-            holder.b.root.isFocusable = false
         }
     }
 

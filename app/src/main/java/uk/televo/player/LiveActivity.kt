@@ -52,20 +52,35 @@ class LiveActivity : AppCompatActivity() {
 
     // Auto-hide the on-screen info when idle, leaving just the stream.
     private val overlayHandler = Handler(Looper.getMainLooper())
+    private var overlayVisible = false
+    private var muted = false
     private val hideOverlay = Runnable {
         b.liveBadge.visibility = View.GONE
         b.nowBar.visibility = View.GONE
+        b.fsControls.visibility = View.GONE
+        overlayVisible = false
     }
     private fun showOverlay() {
         b.liveBadge.visibility = View.VISIBLE
         b.nowBar.visibility = View.VISIBLE
+        b.fsControls.visibility = if (fullscreen) View.VISIBLE else View.GONE
+        overlayVisible = true
         overlayHandler.removeCallbacks(hideOverlay)
-        overlayHandler.postDelayed(hideOverlay, 4000)
+        overlayHandler.postDelayed(hideOverlay, if (fullscreen) 6000 else 4000)
     }
 
     override fun onUserInteraction() {
         super.onUserInteraction()
         showOverlay()
+    }
+
+    private fun fmtHm(unix: Long): String =
+        SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(unix * 1000L))
+
+    private fun toggleMute() {
+        muted = !muted
+        vlc?.volume = if (muted) 0 else 100
+        b.fsVolume.setImageResource(if (muted) R.drawable.ic_volume_off else R.drawable.ic_volume)
     }
 
     // Keep the parsed catalogue for the session so re-entering Live TV is instant.
@@ -88,6 +103,11 @@ class LiveActivity : AppCompatActivity() {
         b.railFull.setOnClickListener { toggleFullscreen() }
         b.railAspect.setOnClickListener { cycleAspect() }
         b.playerFrame.setOnClickListener { toggleFullscreen() }
+        b.fsBack.setOnClickListener { setFullscreen(false) }
+        b.fsAspect.setOnClickListener { cycleAspect() }
+        b.fsAspectLabel.setOnClickListener { cycleAspect() }
+        b.fsVolume.setOnClickListener { toggleMute() }
+        b.fsAspectLabel.text = aspectName(Prefs.aspectMode(this))
         b.railFav.setOnClickListener { toggleFavourites() }
         b.railLock.setOnClickListener { toggleLock() }
         b.railSearch.setOnClickListener { toggleSearch() }
@@ -221,6 +241,8 @@ class LiveActivity : AppCompatActivity() {
         val next = (Prefs.aspectMode(this) + 1) % 6
         Prefs.setAspectMode(this, next)
         applyAspect()
+        b.fsAspectLabel.text = aspectName(next)
+        showOverlay()
         Toast.makeText(this, aspectName(next), Toast.LENGTH_SHORT).show()
     }
 
@@ -333,12 +355,13 @@ class LiveActivity : AppCompatActivity() {
         retries = 0
         altTried = false
         Prefs.saveLastChannel(this, ch.streamId)
-        b.nowLogo.text = initials(ch.name)
-        ImageLoader.load(ch.icon, b.nowLogoImg)
         b.nowTitle.text = ch.name
         b.nowSub.text = currentCat?.name ?: ""
         b.nowNum.text = "N° ${ch.num}"
         b.nowQuality.text = ""
+        b.nowProgress.progress = 0
+        b.nowTimeStart.text = ""
+        b.nowTimeEnd.text = ""
         showOverlay()
         playVariant(ts = true)   // .ts first (best for 4K); falls back to HLS on error
         loadEpg(p, ch.streamId)
@@ -353,7 +376,20 @@ class LiveActivity : AppCompatActivity() {
         Net.run {
             val list = Xtream.catchupEpg(p, streamId).ifEmpty { Xtream.shortEpg(p, streamId) }
             Net.ui {
-                currentNow = list.firstOrNull { it.now }?.title ?: ""
+                val nowItem = list.firstOrNull { it.now }
+                currentNow = nowItem?.title ?: ""
+                // info-bar programme + progress line
+                if (nowItem != null && nowItem.startUnix > 0 && nowItem.stopUnix > nowItem.startUnix) {
+                    b.nowSub.text = nowItem.title
+                    b.nowTimeStart.text = fmtHm(nowItem.startUnix)
+                    b.nowTimeEnd.text = fmtHm(nowItem.stopUnix)
+                    val nowS = System.currentTimeMillis() / 1000
+                    val prog = ((nowS - nowItem.startUnix) * 100 / (nowItem.stopUnix - nowItem.startUnix)).toInt()
+                    b.nowProgress.progress = prog.coerceIn(0, 100)
+                } else {
+                    b.nowSub.text = currentCat?.name ?: ""
+                    b.nowProgress.progress = 0
+                }
                 if (list.isEmpty()) b.epgEmpty.visibility = View.VISIBLE
                 else {
                     b.epgEmpty.visibility = View.GONE
@@ -386,11 +422,17 @@ class LiveActivity : AppCompatActivity() {
         b.colCategories.visibility = vis
         b.colChannels.visibility = vis
         b.epgCard.visibility = vis
-        // Keep the user's chosen aspect (default Fit — never distorts); the panels just hide.
         applyAspect()
         val pad = if (on) 0 else (14 * resources.displayMetrics.density).toInt()
         b.stageCol.setPadding(pad, pad, pad, pad)
         b.railFull.setColorFilter(ContextCompat.getColor(this, if (on) R.color.tv_accent else R.color.tv_muted))
+        if (on) {
+            showOverlay()
+            b.fsAspectLabel.post { b.fsAspectLabel.requestFocus() }
+        } else {
+            b.fsControls.visibility = View.GONE
+            b.rvChannels.post { b.rvChannels.requestFocus() }
+        }
     }
 
     // ---------------- favourites ----------------
@@ -505,13 +547,16 @@ class LiveActivity : AppCompatActivity() {
                 KeyEvent.KEYCODE_CHANNEL_UP -> { showOverlay(); zap(-1); return true }
                 KeyEvent.KEYCODE_CHANNEL_DOWN -> { showOverlay(); zap(+1); return true }
             }
-            // In fullscreen the D-pad drives the player instead of moving focus.
+            // In fullscreen: up/down zap channels; left/right/OK reach the on-screen controls.
             if (fullscreen && !locked) {
                 when (e.keyCode) {
                     KeyEvent.KEYCODE_DPAD_UP -> { showOverlay(); zap(-1); return true }
                     KeyEvent.KEYCODE_DPAD_DOWN -> { showOverlay(); zap(+1); return true }
-                    KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { showOverlay(); return true }
-                    KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT -> { setFullscreen(false); return true }
+                    KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT,
+                    KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
+                        // First press just reveals the controls & focuses them; then let the D-pad move between them.
+                        if (!overlayVisible) { showOverlay(); b.fsAspectLabel.requestFocus(); return true }
+                    }
                 }
             }
         }
