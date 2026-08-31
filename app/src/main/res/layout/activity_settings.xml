@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="40dp"
+    android:fillViewport="true">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:maxWidth="1100dp" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="32dp">
+
+            <!-- header -->
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_settings" android:tint="@color/tv_accent" android:contentDescription="@null" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:fontFamily="@font/outfit" android:text="@string/settings" android:textColor="@color/tv_text" android:textSize="26sp" android:textStyle="bold" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@drawable/bg_divider_v" android:layout_marginTop="18dp" />
+
+            <!-- body: two columns -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="22dp" android:baselineAligned="false">
+
+                <!-- left options -->
+                <LinearLayout android:layout_width="0dp" android:layout_weight="2.2" android:layout_height="wrap_content" android:orientation="vertical">
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_field" android:paddingHorizontal="18dp" android:paddingVertical="16dp" android:layout_marginBottom="12dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/play_last_startup" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+                        <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/sw_play_last" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout android:id="@+id/row_sort_cats" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_field" android:paddingHorizontal="18dp" android:paddingVertical="16dp" android:focusable="true" android:clickable="true" android:layout_marginBottom="12dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/sort_categories" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/val_sort_cats" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_chip_val" android:paddingHorizontal="14dp" android:paddingVertical="7dp" android:text="@string/opt_default" android:textColor="@color/white" android:textSize="14sp" android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout android:id="@+id/row_sort_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_field" android:paddingHorizontal="18dp" android:paddingVertical="16dp" android:focusable="true" android:clickable="true" android:layout_marginBottom="12dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/sort_content" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/val_sort_content" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_chip_val" android:paddingHorizontal="14dp" android:paddingVertical="7dp" android:text="@string/opt_default" android:textColor="@color/white" android:textSize="14sp" android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_field" android:paddingHorizontal="18dp" android:paddingVertical="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/search_in_category" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+                        <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/sw_search_cat" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- divider -->
+                <View android:layout_width="1dp" android:layout_height="match_parent" android:background="@drawable/bg_divider_v" android:layout_marginHorizontal="28dp" />
+
+                <!-- right: PIN -->
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1.3" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center">
+                    <ImageView android:layout_width="72dp" android:layout_height="72dp" android:src="@drawable/ic_key" android:tint="@color/tv_text" android:contentDescription="@null" />
+                    <LinearLayout android:id="@+id/btn_change_pin" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingVertical="16dp" android:focusable="true" android:clickable="true" android:layout_marginTop="24dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/change_pin" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:text="@string/default_pin_hint" android:textColor="@color/tv_muted" android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- close -->
+            <LinearLayout android:id="@+id/btn_close" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingVertical="16dp" android:focusable="true" android:clickable="true" android:layout_marginTop="24dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/close" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

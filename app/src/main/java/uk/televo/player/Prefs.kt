@@ -43,6 +43,28 @@ object Prefs {
     fun timeshift(c: Context): Int = sp(c).getInt("timeshift_min", 0)
     fun setTimeshift(c: Context, minutes: Int) { sp(c).edit().putInt("timeshift_min", minutes).apply() }
 
+    // ---- app settings ----
+    fun playLastOnStartup(c: Context): Boolean = sp(c).getBoolean("play_last", false)
+    fun setPlayLastOnStartup(c: Context, v: Boolean) { sp(c).edit().putBoolean("play_last", v).apply() }
+
+    fun searchInCategory(c: Context): Boolean = sp(c).getBoolean("search_in_cat", false)
+    fun setSearchInCategory(c: Context, v: Boolean) { sp(c).edit().putBoolean("search_in_cat", v).apply() }
+
+    /** 0 = Default, 1 = A→Z, 2 = Z→A */
+    fun sortCategories(c: Context): Int = sp(c).getInt("sort_cats", 0)
+    fun setSortCategories(c: Context, v: Int) { sp(c).edit().putInt("sort_cats", v).apply() }
+
+    /** 0 = Default, 1 = A→Z, 2 = Z→A, 3 = By number */
+    fun sortContent(c: Context): Int = sp(c).getInt("sort_content", 0)
+    fun setSortContent(c: Context, v: Int) { sp(c).edit().putInt("sort_content", v).apply() }
+
+    fun pin(c: Context): String = sp(c).getString("pin", "0000") ?: "0000"
+    fun setPin(c: Context, v: String) { sp(c).edit().putString("pin", v).apply() }
+
+    // ---- last played channel (for "play last on startup") ----
+    fun lastStreamId(c: Context): String? = sp(c).getString("last_stream", null)
+    fun saveLastChannel(c: Context, streamId: String) { sp(c).edit().putString("last_stream", streamId).apply() }
+
     fun logout(c: Context) {
         sp(c).edit()
             .remove("host").remove("username").remove("password").remove("server_name")

@@ -34,7 +34,7 @@ class HomeActivity : AppCompatActivity() {
         b.actRefresh.setOnClickListener { refresh() }
         b.actLang.setOnClickListener { languageDialog() }
         b.actTimeshift.setOnClickListener { timeshiftDialog() }
-        b.actSettings.setOnClickListener { settingsDialog() }
+        b.actSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         b.actInfo.setOnClickListener { infoDialog() }
         b.actPower.setOnClickListener { powerDialog() }
 
@@ -122,32 +122,13 @@ class HomeActivity : AppCompatActivity() {
             .show()
     }
 
-    // ---------- settings ----------
-
-    private fun settingsDialog() {
-        val info = getString(R.string.server) + ": " + (Prefs.serverName(this) ?: "-") +
-            "\n" + getString(R.string.account) + ": " + (Prefs.username(this) ?: "-") +
-            "\n" + expiryText()
-        MaterialAlertDialogBuilder(this, R.style.Theme_Televo_Dialog)
-            .setTitle(R.string.settings)
-            .setMessage(info)
-            .setPositiveButton(R.string.clear_cache) { _, _ ->
-                runCatching { cacheDir?.deleteRecursively() }
-                Toast.makeText(this, getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton(R.string.log_out) { _, _ -> logout() }
-            .setNeutralButton(R.string.cancel, null)
-            .show()
-    }
-
     // ---------- info / about ----------
 
     private fun infoDialog() {
         val msg = "Televo v" + BuildInfo.VERSION +
             "\n" + getString(R.string.server) + ": " + (Prefs.serverName(this) ?: "-") +
             "\n" + getString(R.string.account) + ": " + (Prefs.username(this) ?: "-") +
-            "\n" + expiryText() +
-            "\n\nTelevo is a media player only and does not include any channels."
+            "\n" + expiryText()
         MaterialAlertDialogBuilder(this, R.style.Theme_Televo_Dialog)
             .setTitle(R.string.about)
             .setMessage(msg)

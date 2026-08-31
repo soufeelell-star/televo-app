@@ -9,8 +9,18 @@ class BootActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val next = if (Prefs.isLoggedIn(this)) HomeActivity::class.java else LoginActivity::class.java
-        startActivity(Intent(this, next))
+        if (!Prefs.isLoggedIn(this)) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+        // Optionally jump straight into the last played channel.
+        if (Prefs.playLastOnStartup(this) && Prefs.lastStreamId(this) != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, LiveActivity::class.java))
+        } else {
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
         finish()
     }
 }

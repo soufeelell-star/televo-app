@@ -99,22 +99,49 @@ class LiveActivity : AppCompatActivity() {
             Toast.makeText(this, "No channels found.", Toast.LENGTH_LONG).show()
             return
         }
-        b.rvCategories.adapter = CategoryAdapter(cat.categories) { idx -> selectCategory(cat.categories[idx]) }
-        selectCategory(cat.categories[0], autoplay = true)
+        val cats = sortCats(cat.categories)
+        b.rvCategories.adapter = CategoryAdapter(cats) { idx -> selectCategory(cats[idx]) }
+
+        // resume the last played channel if we still have it, else first channel
+        val last = Prefs.lastStreamId(this)
+        var startCat = cats[0]
+        var startChan: Xtream.Channel? = null
+        if (last != null) {
+            for (c in cats) {
+                val ch = cat.byCategory[c.id]?.firstOrNull { it.streamId == last }
+                if (ch != null) { startCat = c; startChan = ch; break }
+            }
+        }
+        selectCategory(startCat, autoplay = startChan == null)
+        startChan?.let { playChannel(it) }
     }
 
     private fun selectCategory(category: Xtream.Category, autoplay: Boolean = false) {
         currentCat = category
         b.liveCat.text = category.name
         b.chanCatLabel.text = category.name
-        val channels = catalogue?.byCategory?.get(category.id) ?: emptyList()
+        val channels = sortChans(catalogue?.byCategory?.get(category.id) ?: emptyList())
         b.rvChannels.adapter = ChannelAdapter(channels) { ch -> playChannel(ch) }
         if (autoplay && channels.isNotEmpty()) playChannel(channels[0])
+    }
+
+    private fun sortCats(list: List<Xtream.Category>): List<Xtream.Category> = when (Prefs.sortCategories(this)) {
+        1 -> list.sortedBy { it.name.lowercase() }
+        2 -> list.sortedByDescending { it.name.lowercase() }
+        else -> list
+    }
+
+    private fun sortChans(list: List<Xtream.Channel>): List<Xtream.Channel> = when (Prefs.sortContent(this)) {
+        1 -> list.sortedBy { it.name.lowercase() }
+        2 -> list.sortedByDescending { it.name.lowercase() }
+        3 -> list.sortedBy { it.num.toIntOrNull() ?: Int.MAX_VALUE }
+        else -> list
     }
 
     private fun playChannel(ch: Xtream.Channel) {
         val p = playlist ?: return
         val ex = player ?: return
+        Prefs.saveLastChannel(this, ch.streamId)
         b.nowLogo.text = initials(ch.name)
         b.nowTitle.text = ch.name
         b.nowSub.text = currentCat?.name ?: ""

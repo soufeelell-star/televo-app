@@ -33,4 +33,19 @@
     <string name="server">Server</string>
     <string name="account">Account</string>
     <string name="power_msg">What would you like to do?</string>
+
+    <string name="play_last_startup">Play last played channel on startup</string>
+    <string name="sort_categories">Sort categories</string>
+    <string name="sort_content">Sort content list</string>
+    <string name="search_in_category">Search within the selected category</string>
+    <string name="change_pin">Change your PIN</string>
+    <string name="default_pin_hint">The default PIN is 0000</string>
+    <string name="close">Close</string>
+    <string name="opt_default">Default</string>
+    <string name="opt_az">A → Z</string>
+    <string name="opt_za">Z → A</string>
+    <string name="opt_by_number">By number</string>
+    <string name="new_pin">New PIN (4 digits)</string>
+    <string name="pin_changed">PIN updated</string>
+    <string name="pin_invalid">Enter a 4-digit PIN</string>
 </resources>
