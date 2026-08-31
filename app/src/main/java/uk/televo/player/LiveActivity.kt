@@ -111,10 +111,12 @@ class LiveActivity : AppCompatActivity() {
 
     private fun setupPlayer() {
         val options = ArrayList<String>().apply {
-            add("--no-drop-late-frames")
-            add("--no-skip-frames")
-            add("--network-caching=1500")
-            add("--avcodec-hw=any")      // hardware where possible, software fallback for 4K/HEVC
+            add("--network-caching=3000")   // bigger buffer → fewer stalls
+            add("--live-caching=3000")
+            add("--file-caching=3000")
+            add("--clock-jitter=0")
+            add("--clock-synchro=0")
+            add("--avcodec-hw=any")         // hardware where possible, software fallback for 4K/HEVC
             add("--audio-time-stretch")
         }
         val lib = LibVLC(this, options)
@@ -130,7 +132,10 @@ class LiveActivity : AppCompatActivity() {
                 MediaPlayer.Event.Playing -> {
                     b.playerBuffering.visibility = View.GONE
                     retries = 0
+                    // video track size isn't ready instantly — poll a few times
                     updateQuality()
+                    clock.postDelayed({ updateQuality() }, 900)
+                    clock.postDelayed({ updateQuality() }, 2200)
                 }
                 MediaPlayer.Event.Vout -> updateQuality()
                 MediaPlayer.Event.EncounteredError -> onPlayError()
@@ -145,7 +150,9 @@ class LiveActivity : AppCompatActivity() {
         val lib = libVlc ?: return
         val m = Media(lib, Uri.parse(uri))
         m.setHWDecoderEnabled(true, false)     // HW decode, auto software fallback (this fixes 4K/HEVC)
-        m.addOption(":network-caching=1500")
+        m.addOption(":network-caching=3000")
+        m.addOption(":clock-jitter=0")
+        m.addOption(":clock-synchro=0")
         vlc?.media = m
         m.release()
         vlc?.play()

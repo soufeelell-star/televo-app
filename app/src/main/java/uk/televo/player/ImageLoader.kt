@@ -7,9 +7,9 @@ import android.widget.ImageView
 import java.net.HttpURLConnection
 import java.net.URL
 
-/** Minimal async image loader (posters/covers) with an in-memory cache. No external library. */
+/** Minimal async image loader (channel logos, posters) with an in-memory cache. */
 object ImageLoader {
-    private val cache = object : LruCache<String, Bitmap>(24 * 1024 * 1024) {
+    private val cache = object : LruCache<String, Bitmap>(32 * 1024 * 1024) {
         override fun sizeOf(key: String, value: Bitmap): Int = value.byteCount
     }
 
@@ -19,20 +19,45 @@ object ImageLoader {
         cache.get(url)?.let { into.setImageBitmap(it); return }
         into.setImageDrawable(null)
         Net.run {
-            var bmp: Bitmap? = null
-            try {
-                val conn = (URL(url).openConnection() as HttpURLConnection).apply {
-                    connectTimeout = 8000; readTimeout = 12000; instanceFollowRedirects = true
-                    setRequestProperty("User-Agent", "Televo/1.0")
-                }
-                bmp = conn.inputStream.use { BitmapFactory.decodeStream(it) }
-                conn.disconnect()
-            } catch (e: Exception) { /* ignore broken images */ }
-            val b = bmp
-            if (b != null) {
-                cache.put(url, b)
-                Net.ui { if (into.tag == url) into.setImageBitmap(b) }
+            val bmp = runCatching { fetch(url, 0) }.getOrNull()
+            if (bmp != null) {
+                cache.put(url, bmp)
+                Net.ui { if (into.tag == url) into.setImageBitmap(bmp) }
             }
+        }
+    }
+
+    /** Fetch an image, following redirects manually (incl. http<->https, which HttpURLConnection won't). */
+    private fun fetch(spec: String, hops: Int): Bitmap? {
+        if (hops > 4) return null
+        val conn = (URL(spec).openConnection() as HttpURLConnection).apply {
+            connectTimeout = 9000
+            readTimeout = 12000
+            instanceFollowRedirects = false
+            // Some logo hosts block non-browser agents (why they show in other players but not here).
+            setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 Televo")
+            setRequestProperty("Accept", "image/avif,image/webp,image/png,image/*,*/*")
+        }
+        try {
+            val code = conn.responseCode
+            if (code in 300..399) {
+                val loc = conn.getHeaderField("Location") ?: return null
+                val next = URL(URL(spec), loc).toString()   // resolve relative/absolute
+                return fetch(next, hops + 1)
+            }
+            if (code !in 200..299) return null
+            val bytes = conn.inputStream.use { it.readBytes() }
+            if (bytes.isEmpty()) return null
+            // downsample very large logos to keep memory sane
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+            var sample = 1
+            val maxDim = 256
+            while (bounds.outWidth / sample > maxDim || bounds.outHeight / sample > maxDim) sample *= 2
+            val opts = BitmapFactory.Options().apply { inSampleSize = sample }
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
+        } finally {
+            conn.disconnect()
         }
     }
 }
