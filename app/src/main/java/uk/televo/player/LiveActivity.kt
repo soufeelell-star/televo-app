@@ -389,14 +389,11 @@ class LiveActivity : AppCompatActivity() {
                     b.nowSub.text = currentCat?.name ?: ""
                     b.nowProgress.progress = 0
                 }
-                // Hide the whole EPG box when the channel has no guide; show it when it does.
+                // Keep the box in place; when there's no guide it just stays empty (no header/text).
                 hasEpg = list.isNotEmpty()
-                if (!hasEpg) {
-                    b.epgCard.visibility = View.GONE
-                } else {
-                    b.epgCard.visibility = if (fullscreen) View.GONE else View.VISIBLE
-                    b.rvEpg.adapter = EpgAdapter(list) { e -> playCatchup(p, streamId, e) }
-                }
+                b.epgHeader.visibility = if (hasEpg) View.VISIBLE else View.GONE
+                b.epgEmpty.visibility = View.GONE
+                b.rvEpg.adapter = if (hasEpg) EpgAdapter(list) { e -> playCatchup(p, streamId, e) } else null
             }
         }
     }
@@ -423,7 +420,7 @@ class LiveActivity : AppCompatActivity() {
         b.railCol.visibility = vis
         b.colCategories.visibility = vis
         b.colChannels.visibility = vis
-        b.epgCard.visibility = if (on) View.GONE else (if (hasEpg) View.VISIBLE else View.GONE)
+        b.epgCard.visibility = vis
         b.divRail.visibility = vis
         b.divCats.visibility = vis
         b.divChans.visibility = vis
