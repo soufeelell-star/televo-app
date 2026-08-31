@@ -4,14 +4,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:background="@drawable/bg_ghost"
+    android:background="@drawable/bg_row"
     android:focusable="true"
     android:clickable="true"
     android:padding="14dp"
     android:layout_marginBottom="8dp">
 
-    <TextView android:id="@+id/cat_name" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:fontFamily="@font/outfit"
-        android:text="Category" android:textColor="@color/tv_text" android:textSize="15sp" android:textStyle="bold"
+    <TextView android:id="@+id/cat_name" android:duplicateParentState="true" android:textColor="@color/row_name" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:fontFamily="@font/outfit"
+        android:text="Category" android:textSize="14.5sp" android:textStyle="bold"
         android:singleLine="true" android:ellipsize="end" />
 
     <TextView android:id="@+id/cat_count" android:layout_width="wrap_content" android:layout_height="wrap_content"

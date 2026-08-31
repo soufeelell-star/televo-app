@@ -23,12 +23,12 @@ class HomeActivity : AppCompatActivity() {
         b.tileRadio.setOnClickListener { startActivity(Intent(this, RadioActivity::class.java)) }
 
         val soon = View.OnClickListener { Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show() }
-        b.btnRefresh.setOnClickListener(soon)
-        b.btnLang.setOnClickListener(soon)
-        b.btnTimeshift.setOnClickListener(soon)
-        b.btnInfo.setOnClickListener(soon)
-        b.btnLogout.setOnClickListener { logout() }
-        b.btnPower.setOnClickListener { finishAffinity() }
+        b.actRefresh.setOnClickListener { showAccount(); Toast.makeText(this, "Refreshed", Toast.LENGTH_SHORT).show() }
+        b.actLang.setOnClickListener(soon)
+        b.actTimeshift.setOnClickListener(soon)
+        b.actSettings.setOnClickListener(soon)
+        b.actInfo.setOnClickListener(soon)
+        b.actPower.setOnClickListener { logout() }
 
         showAccount()
         b.tileLive.requestFocus()
@@ -42,7 +42,7 @@ class HomeActivity : AppCompatActivity() {
     private fun showAccount() {
         b.homePlaylist.text = Prefs.serverName(this) ?: "Televo"
         b.homeState.text = "●  Active"
-        b.homeExpires.text = Prefs.username(this)?.let { "@$it" } ?: ""
+        b.homeExpires.text = "Lifetime"
     }
 
     private fun logout() {

@@ -41,10 +41,15 @@ class LiveActivity : AppCompatActivity() {
         b.rvEpg.layoutManager = LinearLayoutManager(this)
 
         b.railHome.setOnClickListener { finish() }
+        b.railExit.setOnClickListener { finish() }
         val soon = View.OnClickListener { Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show() }
+        b.railFull.setOnClickListener(soon)
         b.railFav.setOnClickListener(soon)
         b.railLock.setOnClickListener(soon)
         b.railSearch.setOnClickListener(soon)
+        b.railSettings.setOnClickListener(soon)
+        b.railLang.setOnClickListener(soon)
+        b.railInfo.setOnClickListener(soon)
 
         setupPlayer()
         tickClock()

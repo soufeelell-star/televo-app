@@ -10,6 +10,8 @@ class ChannelAdapter(
     private val onClick: (Xtream.Channel) -> Unit
 ) : RecyclerView.Adapter<ChannelAdapter.VH>() {
 
+    private var selected = 0
+
     class VH(val b: ItemChannelBinding) : RecyclerView.ViewHolder(b.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -22,7 +24,14 @@ class ChannelAdapter(
         holder.b.chName.text = c.name
         holder.b.chNum.text = c.num
         holder.b.chLogo.text = initials(c.name)
-        holder.b.root.setOnClickListener { onClick(c) }
+        holder.b.root.isSelected = position == selected
+        holder.b.root.setOnClickListener {
+            val old = selected
+            selected = position
+            notifyItemChanged(old)
+            notifyItemChanged(position)
+            onClick(c)
+        }
     }
 
     override fun getItemCount(): Int = items.size
