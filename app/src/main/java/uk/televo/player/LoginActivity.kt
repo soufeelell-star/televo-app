@@ -75,15 +75,16 @@ class LoginActivity : AppCompatActivity() {
         b.btnLogin.isEnabled = false
 
         Net.run {
-            val (ok, msg) = Api.xtreamLogin(server.baseUrl, user, pass)
+            val res = Api.login(server.baseUrl, user, pass)
             Net.ui {
                 b.btnLogin.isEnabled = true
-                if (ok) {
+                if (res.ok) {
                     Prefs.saveLogin(this, label(selected), server.baseUrl, user, pass)
+                    Prefs.setExpiry(this, res.expiresAt)
                     startActivity(Intent(this, HomeActivity::class.java))
                     finish()
                 } else {
-                    warn(msg)
+                    warn(res.message)
                 }
             }
         }

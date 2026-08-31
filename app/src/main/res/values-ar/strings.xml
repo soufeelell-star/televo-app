@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="live_tv">البث المباشر</string>
+    <string name="movies">أفلام</string>
+    <string name="series">مسلسلات</string>
+    <string name="radio">راديو</string>
+    <string name="playlist">قائمة التشغيل</string>
+    <string name="active">نشط</string>
+    <string name="unlimited">مدى الحياة</string>
+    <string name="expires">تنتهي</string>
+    <string name="ready">جاهز</string>
+    <string name="cached">مخزن</string>
+    <string name="refresh">تحديث</string>
+    <string name="language">اللغة</string>
+    <string name="time_shift">التأجيل</string>
+    <string name="settings">الإعدادات</string>
+    <string name="info">معلومات</string>
+    <string name="refreshed">تم التحديث</string>
+    <string name="choose_language">اختر اللغة</string>
+    <string name="live">مباشر</string>
+    <string name="log_out">تسجيل الخروج</string>
+    <string name="exit">خروج</string>
+    <string name="cancel">إلغاء</string>
+    <string name="clear_cache">مسح ذاكرة الصور</string>
+    <string name="cache_cleared">تم مسح الذاكرة</string>
+    <string name="about">حول Televo</string>
+    <string name="server">الخادم</string>
+    <string name="account">الحساب</string>
+    <string name="power_msg">ماذا تريد أن تفعل؟</string>
+</resources>

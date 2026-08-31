@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="live_tv">TV en direct</string>
+    <string name="movies">Films</string>
+    <string name="series">Séries</string>
+    <string name="radio">Radio</string>
+    <string name="playlist">Playlist</string>
+    <string name="active">Actif</string>
+    <string name="unlimited">À vie</string>
+    <string name="expires">Expire</string>
+    <string name="ready">Prêt</string>
+    <string name="cached">En cache</string>
+    <string name="refresh">Actualiser</string>
+    <string name="language">Langue</string>
+    <string name="time_shift">Différé</string>
+    <string name="settings">Paramètres</string>
+    <string name="info">Infos</string>
+    <string name="refreshed">Mis à jour</string>
+    <string name="choose_language">Choisir la langue</string>
+    <string name="live">Direct</string>
+    <string name="log_out">Déconnexion</string>
+    <string name="exit">Quitter</string>
+    <string name="cancel">Annuler</string>
+    <string name="clear_cache">Vider le cache d\'images</string>
+    <string name="cache_cleared">Cache vidé</string>
+    <string name="about">À propos de Televo</string>
+    <string name="server">Serveur</string>
+    <string name="account">Compte</string>
+    <string name="power_msg">Que voulez-vous faire ?</string>
+</resources>

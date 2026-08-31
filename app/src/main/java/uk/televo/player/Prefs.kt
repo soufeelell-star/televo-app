@@ -31,9 +31,22 @@ object Prefs {
             .apply()
     }
 
+    // ---- subscription expiry (unix seconds; 0 = unlimited/lifetime) ----
+    fun setExpiry(c: Context, unix: Long?) { sp(c).edit().putLong("expires_at", unix ?: 0L).apply() }
+    fun expiry(c: Context): Long = sp(c).getLong("expires_at", 0L)
+
+    // ---- interface language (ISO code, default English) ----
+    fun language(c: Context): String = sp(c).getString("lang", "en") ?: "en"
+    fun setLanguage(c: Context, code: String) { sp(c).edit().putString("lang", code).apply() }
+
+    // ---- time-shift offset in minutes (0 = live) ----
+    fun timeshift(c: Context): Int = sp(c).getInt("timeshift_min", 0)
+    fun setTimeshift(c: Context, minutes: Int) { sp(c).edit().putInt("timeshift_min", minutes).apply() }
+
     fun logout(c: Context) {
         sp(c).edit()
             .remove("host").remove("username").remove("password").remove("server_name")
+            .remove("expires_at")
             .apply()
     }
 

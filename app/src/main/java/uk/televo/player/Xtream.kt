@@ -110,6 +110,17 @@ object Xtream {
     fun playUrl(p: Api.Playlist, streamId: String): String =
         "${p.host}/live/${p.username}/${p.password}/$streamId.m3u8"
 
+    /**
+     * Catch-up / time-shift URL: play from [minutes] ago. Works where the
+     * provider supports Xtream time-shift; otherwise the stream simply won't
+     * load and the user can switch back to Live.
+     */
+    fun timeshiftUrl(p: Api.Playlist, streamId: String, minutes: Int): String {
+        val start = SimpleDateFormat("yyyy-MM-dd:HH-mm", Locale.US)
+            .format(Date(System.currentTimeMillis() - minutes * 60_000L))
+        return "${p.host}/timeshift/${p.username}/${p.password}/$minutes/$start/$streamId.ts"
+    }
+
     // ---------------- Movies (VOD) ----------------
     data class Vod(val name: String, val streamId: String, val icon: String?, val categoryId: String, val ext: String, val rating: String)
     class VodCatalogue(val categories: List<Category>, val byCategory: Map<String, List<Vod>>)

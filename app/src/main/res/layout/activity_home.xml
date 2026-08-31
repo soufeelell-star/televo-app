@@ -3,108 +3,91 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:paddingHorizontal="96dp">
 
-    <!-- ===== main (centered) ===== -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
+    <ImageView android:layout_width="330dp" android:layout_height="wrap_content" android:adjustViewBounds="true" android:src="@drawable/televo_lockup" android:contentDescription="@string/app_name" />
 
-        <ImageView android:layout_width="330dp" android:layout_height="wrap_content" android:adjustViewBounds="true" android:src="@drawable/televo_lockup" android:contentDescription="@string/app_name" />
+    <!-- chips row -->
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="30dp">
 
-        <!-- chips row -->
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="30dp">
-
-            <!-- playlist chip -->
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_pill" android:paddingHorizontal="22dp" android:paddingVertical="12dp">
-                <ImageView android:layout_width="17dp" android:layout_height="17dp" android:src="@drawable/ic_playlist" android:tint="@color/tv_muted" android:contentDescription="@null" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Playlist" android:textColor="@color/tv_muted" android:textSize="16sp" android:textStyle="bold" />
-                <TextView android:id="@+id/home_playlist" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="—" android:textColor="@color/tv_magenta" android:textSize="16sp" android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- status segmented pill -->
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_pill" android:layout_marginStart="14dp">
-                <TextView android:id="@+id/home_state" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingHorizontal="22dp" android:paddingVertical="12dp" android:text="●  Active" android:textColor="@color/tv_good" android:textSize="16sp" android:textStyle="bold" />
-                <View android:layout_width="1dp" android:layout_height="match_parent" android:background="@drawable/bg_divider_v" />
-                <TextView android:id="@+id/home_expires" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingHorizontal="22dp" android:paddingVertical="12dp" android:text="Lifetime" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
-            </LinearLayout>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_pill" android:paddingHorizontal="22dp" android:paddingVertical="12dp">
+            <ImageView android:layout_width="17dp" android:layout_height="17dp" android:src="@drawable/ic_playlist" android:tint="@color/tv_muted" android:contentDescription="@null" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="@string/playlist" android:textColor="@color/tv_muted" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/home_playlist" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="—" android:textColor="@color/tv_magenta" android:textSize="16sp" android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- tiles -->
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="30dp">
-
-            <!-- Live TV (active) -->
-            <LinearLayout android:id="@+id/tile_live" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true" android:layout_marginEnd="22dp">
-                <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well_active">
-                    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_live" android:tint="@color/tv_accent" android:contentDescription="@string/live_tv" />
-                </FrameLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/live_tv" android:textColor="@color/tv_text" android:textSize="24sp" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Cached" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Movies -->
-            <LinearLayout android:id="@+id/tile_movies" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true" android:layout_marginEnd="22dp">
-                <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well">
-                    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_movies" android:tint="@color/tv_icon" android:contentDescription="@string/movies" />
-                </FrameLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/movies" android:textColor="@color/tv_text" android:textSize="24sp" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Cached" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Series -->
-            <LinearLayout android:id="@+id/tile_series" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true" android:layout_marginEnd="22dp">
-                <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well">
-                    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_series" android:tint="@color/tv_icon" android:contentDescription="@string/series" />
-                </FrameLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/series" android:textColor="@color/tv_text" android:textSize="24sp" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Cached" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Radio -->
-            <LinearLayout android:id="@+id/tile_radio" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true">
-                <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well">
-                    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_radio" android:tint="@color/tv_icon" android:contentDescription="@string/radio" />
-                </FrameLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/radio" android:textColor="@color/tv_text" android:textSize="24sp" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Ready" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- actions -->
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="30dp">
-
-            <LinearLayout android:id="@+id/act_refresh" android:layout_width="wrap_content" android:layout_height="54dp" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingHorizontal="20dp" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="19dp" android:layout_height="19dp" android:src="@drawable/ic_refresh" android:tint="@color/tv_text" android:contentDescription="@null" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Refresh" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout android:id="@+id/act_lang" android:layout_width="wrap_content" android:layout_height="54dp" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingHorizontal="20dp" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="19dp" android:layout_height="19dp" android:src="@drawable/ic_globe" android:tint="@color/tv_text" android:contentDescription="@null" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Language (EN)" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout android:id="@+id/act_timeshift" android:layout_width="wrap_content" android:layout_height="54dp" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingHorizontal="20dp" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="19dp" android:layout_height="19dp" android:src="@drawable/ic_clock" android:tint="@color/tv_text" android:contentDescription="@null" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Time Shift" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
-            </LinearLayout>
-
-            <FrameLayout android:id="@+id/act_settings" android:layout_width="54dp" android:layout_height="54dp" android:background="@drawable/bg_ghost" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:src="@drawable/ic_settings" android:tint="@color/tv_text" android:contentDescription="Settings" />
-            </FrameLayout>
-
-            <FrameLayout android:id="@+id/act_info" android:layout_width="54dp" android:layout_height="54dp" android:background="@drawable/bg_ghost" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:src="@drawable/ic_info" android:tint="@color/tv_text" android:contentDescription="Info" />
-            </FrameLayout>
-
-            <FrameLayout android:id="@+id/act_power" android:layout_width="54dp" android:layout_height="54dp" android:background="@drawable/bg_ghost" android:focusable="true" android:clickable="true">
-                <ImageView android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:src="@drawable/ic_power" android:tint="@color/tv_text" android:contentDescription="Log out" />
-            </FrameLayout>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_pill" android:layout_marginStart="14dp">
+            <TextView android:id="@+id/home_state" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingHorizontal="22dp" android:paddingVertical="12dp" android:text="●  Active" android:textColor="@color/tv_good" android:textSize="16sp" android:textStyle="bold" />
+            <View android:layout_width="1dp" android:layout_height="match_parent" android:background="@drawable/bg_divider_v" />
+            <TextView android:id="@+id/home_expires" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingHorizontal="22dp" android:paddingVertical="12dp" android:text="—" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- ===== footer ===== -->
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:paddingBottom="26dp" android:text="@string/disclaimer" android:textColor="@color/tv_muted3" android:textSize="14sp" />
+    <!-- tiles -->
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="30dp">
+
+        <LinearLayout android:id="@+id/tile_live" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true" android:layout_marginEnd="22dp">
+            <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well_active">
+                <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_live" android:tint="@color/tv_accent" android:contentDescription="@string/live_tv" />
+            </FrameLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/live_tv" android:textColor="@color/tv_text" android:textSize="24sp" />
+            <TextView android:id="@+id/chip_live" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Cached" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/tile_movies" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true" android:layout_marginEnd="22dp">
+            <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well">
+                <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_movies" android:tint="@color/tv_icon" android:contentDescription="@string/movies" />
+            </FrameLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/movies" android:textColor="@color/tv_text" android:textSize="24sp" />
+            <TextView android:id="@+id/chip_movies" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Cached" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/tile_series" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true" android:layout_marginEnd="22dp">
+            <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well">
+                <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_series" android:tint="@color/tv_icon" android:contentDescription="@string/series" />
+            </FrameLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/series" android:textColor="@color/tv_text" android:textSize="24sp" />
+            <TextView android:id="@+id/chip_series" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Cached" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/tile_radio" android:layout_width="235dp" android:layout_height="230dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_tile" android:focusable="true" android:clickable="true">
+            <FrameLayout android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_icon_well">
+                <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center" android:src="@drawable/ic_radio" android:tint="@color/tv_icon" android:contentDescription="@string/radio" />
+            </FrameLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:fontFamily="@font/outfit" android:text="@string/radio" android:textColor="@color/tv_text" android:textSize="24sp" />
+            <TextView android:id="@+id/chip_radio" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/bg_badge_green" android:paddingHorizontal="13dp" android:paddingVertical="6dp" android:text="● Ready" android:textColor="@color/tv_good" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- actions -->
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="30dp">
+
+        <LinearLayout android:id="@+id/act_refresh" android:layout_width="wrap_content" android:layout_height="54dp" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingHorizontal="20dp" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="19dp" android:layout_height="19dp" android:src="@drawable/ic_refresh" android:tint="@color/tv_text" android:contentDescription="@null" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="@string/refresh" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/act_lang" android:layout_width="wrap_content" android:layout_height="54dp" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingHorizontal="20dp" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="19dp" android:layout_height="19dp" android:src="@drawable/ic_globe" android:tint="@color/tv_text" android:contentDescription="@null" />
+            <TextView android:id="@+id/lang_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="Language (EN)" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/act_timeshift" android:layout_width="wrap_content" android:layout_height="54dp" android:orientation="horizontal" android:gravity="center" android:background="@drawable/bg_ghost" android:paddingHorizontal="20dp" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="19dp" android:layout_height="19dp" android:src="@drawable/ic_clock" android:tint="@color/tv_text" android:contentDescription="@null" />
+            <TextView android:id="@+id/ts_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:text="@string/time_shift" android:textColor="@color/tv_text" android:textSize="16sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <FrameLayout android:id="@+id/act_settings" android:layout_width="54dp" android:layout_height="54dp" android:background="@drawable/bg_ghost" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:src="@drawable/ic_settings" android:tint="@color/tv_text" android:contentDescription="@string/settings" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/act_info" android:layout_width="54dp" android:layout_height="54dp" android:background="@drawable/bg_ghost" android:focusable="true" android:clickable="true" android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:src="@drawable/ic_info" android:tint="@color/tv_text" android:contentDescription="@string/info" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/act_power" android:layout_width="54dp" android:layout_height="54dp" android:background="@drawable/bg_ghost" android:focusable="true" android:clickable="true">
+            <ImageView android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:src="@drawable/ic_power" android:tint="@color/tv_text" android:contentDescription="@string/log_out" />
+        </FrameLayout>
+    </LinearLayout>
 </LinearLayout>

@@ -84,7 +84,7 @@ class LiveActivity : AppCompatActivity() {
                 val cat = Xtream.loadCatalogue(xt)
                 Net.ui {
                     b.livePlaylist.text = xt.label
-                    b.liveActivation.text = "Active"
+                    b.liveActivation.text = expiryLabel()
                     bindCatalogue(cat)
                 }
             } catch (e: Exception) {
@@ -119,7 +119,9 @@ class LiveActivity : AppCompatActivity() {
         b.nowTitle.text = ch.name
         b.nowSub.text = currentCat?.name ?: ""
         b.nowNum.text = "N° ${ch.num}"
-        ex.setMediaItem(MediaItem.fromUri(Xtream.playUrl(p, ch.streamId)))
+        val ts = Prefs.timeshift(this)
+        val uri = if (ts > 0) Xtream.timeshiftUrl(p, ch.streamId, ts) else Xtream.playUrl(p, ch.streamId)
+        ex.setMediaItem(MediaItem.fromUri(uri))
         ex.playWhenReady = true
         ex.prepare()
         loadEpg(p, ch.streamId)
@@ -140,6 +142,12 @@ class LiveActivity : AppCompatActivity() {
     private fun initials(name: String): String {
         val letters = name.filter { it.isLetterOrDigit() }
         return if (letters.length >= 2) letters.substring(0, 2).uppercase() else "TV"
+    }
+
+    private fun expiryLabel(): String {
+        val e = Prefs.expiry(this)
+        if (e <= 0L) return getString(R.string.unlimited)
+        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(e * 1000L))
     }
 
     private fun tickClock() {

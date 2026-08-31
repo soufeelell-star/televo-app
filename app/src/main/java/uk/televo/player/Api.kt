@@ -23,34 +23,44 @@ object Api {
 
     class ApiException(message: String) : Exception(message)
 
+    /** Result of validating credentials against a server. */
+    data class LoginResult(
+        val ok: Boolean,
+        val message: String,
+        val status: String = "",
+        /** Unix seconds when the subscription expires, or null = unlimited/lifetime. */
+        val expiresAt: Long? = null
+    )
+
     /**
-     * Validate credentials against the server. Returns Pair(success, message).
-     * Success = the panel authenticated the user (auth == 1) and the line isn't
-     * banned/disabled. Call from a background thread.
+     * Validate credentials against the server and read the account's expiry.
+     * Call from a background thread.
      */
-    fun xtreamLogin(host: String, user: String, pass: String): Pair<Boolean, String> {
+    fun login(host: String, user: String, pass: String): LoginResult {
         val base = Prefs.normalize(host)
         val url = "$base/player_api.php?username=${enc(user)}&password=${enc(pass)}"
         val body = try {
             httpGet(url)
         } catch (e: Exception) {
-            return false to "Can't reach the server. Check your internet and try again."
+            return LoginResult(false, "Can't reach the server. Check your internet and try again.")
         }
         val root = try { JSONObject(body) } catch (e: Exception) {
-            return false to "Server returned an unexpected response."
+            return LoginResult(false, "Server returned an unexpected response.")
         }
         val info = root.optJSONObject("user_info")
-            ?: return false to "Wrong username or password."
+            ?: return LoginResult(false, "Wrong username or password.")
 
-        val auth = info.optInt("auth", 0)
-        if (auth != 1) return false to "Wrong username or password."
+        if (info.optInt("auth", 0) != 1) return LoginResult(false, "Wrong username or password.")
 
-        when (info.optString("status", "").lowercase()) {
-            "banned"   -> return false to "This account is banned. Contact your provider."
-            "disabled" -> return false to "This account is disabled. Contact your provider."
-            "expired"  -> return false to "This subscription has expired. Contact your provider."
+        val status = info.optString("status", "").lowercase()
+        when (status) {
+            "banned"   -> return LoginResult(false, "This account is banned. Contact your provider.", status)
+            "disabled" -> return LoginResult(false, "This account is disabled. Contact your provider.", status)
+            "expired"  -> return LoginResult(false, "This subscription has expired. Contact your provider.", status)
         }
-        return true to "OK"
+
+        val exp = info.optString("exp_date", "").let { if (it.isBlank() || it == "null") null else it.toLongOrNull() }
+        return LoginResult(true, "OK", status, exp)
     }
 
     /** Backwards-compatible helper the content screens use: the single saved login. */

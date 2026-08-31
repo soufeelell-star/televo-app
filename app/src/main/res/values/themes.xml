@@ -13,4 +13,27 @@
         <item name="android:fontFamily">@font/manrope</item>
         <item name="fontFamily">@font/manrope</item>
     </style>
+
+    <!-- Themed dialogs (dark card, accent buttons) -->
+    <style name="Theme.Televo.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/tv_card_top</item>
+        <item name="colorOnSurface">@color/tv_text</item>
+        <item name="colorOnSurfaceVariant">@color/tv_muted</item>
+        <item name="colorPrimary">@color/tv_accent</item>
+        <item name="android:textColorPrimary">@color/tv_text</item>
+        <item name="android:fontFamily">@font/manrope</item>
+        <item name="fontFamily">@font/manrope</item>
+        <item name="shapeAppearanceOverlay">@style/Shape.Televo.Dialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Televo.Dialog.Title</item>
+    </style>
+
+    <style name="Shape.Televo.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">22dp</item>
+    </style>
+
+    <style name="Televo.Dialog.Title" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textColor">@color/tv_text</item>
+    </style>
 </resources>
